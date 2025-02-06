@@ -23,7 +23,7 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
-
+/.env
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 npm-debug.log
