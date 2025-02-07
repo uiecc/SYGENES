@@ -31,6 +31,9 @@ class School
     #[ORM\OneToMany(targetEntity: Field::class, mappedBy: 'school')]
     private Collection $fields;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logo = null;
+
     public function __construct()
     {
         $this->fields = new ArrayCollection();
@@ -103,6 +106,18 @@ class School
                 $field->setSchool(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?string $logo): static
+    {
+        $this->logo = $logo;
 
         return $this;
     }

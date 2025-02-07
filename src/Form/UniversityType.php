@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\University;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,6 +17,7 @@ class UniversityType extends AbstractType
             ->add('code')
             ->add('address')
             ->add('description')
+            ->add('logo', FileType::class)
         ;
     }
 

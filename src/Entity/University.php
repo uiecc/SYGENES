@@ -33,6 +33,9 @@ class University
     #[ORM\OneToMany(targetEntity: School::class, mappedBy: 'university')]
     private Collection $schools;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logo = null;
+
     public function __construct()
     {
         $this->schools = new ArrayCollection();
@@ -117,6 +120,18 @@ class University
                 $school->setUniversity(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?string $logo): static
+    {
+        $this->logo = $logo;
 
         return $this;
     }
