@@ -2,7 +2,10 @@
 // src/Form/StudentType.php
 namespace App\Form;
 
+use App\Entity\Level;
 use App\Entity\Student;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -56,7 +59,30 @@ class StudentType extends AbstractType
             ->add('matricule', TextType::class, [
                 'label' => 'Matricule'
             ])
-        ;
+            ->add('level', EntityType::class, [
+                'class' => Level::class,
+                'choice_label' => function(Level $level) {
+                    return sprintf(
+                        '%s - %s - %s - %s',
+                        $level->getField()->getSchool()->getUniversity()->getName(),
+                        $level->getField()->getSchool()->getName(),
+                        $level->getField()->getName(),
+                        $level->getName()
+                    );
+                },
+                'placeholder' => 'Choisir un niveau',
+                'required' => true,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('l')
+                        ->leftJoin('l.field', 'f')
+                        ->leftJoin('f.school', 's')
+                        ->leftJoin('s.university', 'u')
+                        ->orderBy('u.name', 'ASC')
+                        ->addOrderBy('s.name', 'ASC')
+                        ->addOrderBy('f.name', 'ASC')
+                        ->addOrderBy('l.name', 'ASC');
+                },
+            ])        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

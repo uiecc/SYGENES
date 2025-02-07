@@ -31,6 +31,10 @@ class Student extends User
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $address = null;
 
+    #[ORM\ManyToOne(inversedBy: 'students')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Level $level = null;
+
     public function getSex(): ?string
     {
         return $this->sex;
@@ -111,6 +115,18 @@ class Student extends User
     public function setAddress(?string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getLevel(): ?Level
+    {
+        return $this->level;
+    }
+
+    public function setLevel(?Level $level): static
+    {
+        $this->level = $level;
 
         return $this;
     }

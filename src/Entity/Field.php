@@ -28,7 +28,7 @@ class Field
     /**
      * @var Collection<int, Level>
      */
-    #[ORM\OneToMany(targetEntity: Level::class, mappedBy: 'filed')]
+    #[ORM\OneToMany(targetEntity: Level::class, mappedBy: 'field')]
     private Collection $levels;
 
     public function __construct()
@@ -89,7 +89,7 @@ class Field
     {
         if (!$this->levels->contains($level)) {
             $this->levels->add($level);
-            $level->setFiled($this);
+            $level->setField($this);
         }
 
         return $this;
@@ -99,8 +99,8 @@ class Field
     {
         if ($this->levels->removeElement($level)) {
             // set the owning side to null (unless already changed)
-            if ($level->getFiled() === $this) {
-                $level->setFiled(null);
+            if ($level->getField() === $this) {
+                $level->setField(null);
             }
         }
 

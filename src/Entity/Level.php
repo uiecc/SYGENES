@@ -23,7 +23,7 @@ class Level
 
     #[ORM\ManyToOne(inversedBy: 'levels')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Field $filed = null;
+    private ?Field $field = null;
 
     /**
      * @var Collection<int, Semester>
@@ -31,9 +31,16 @@ class Level
     #[ORM\OneToMany(targetEntity: Semester::class, mappedBy: 'level')]
     private Collection $semesters;
 
+    /**
+     * @var Collection<int, Student>
+     */
+    #[ORM\OneToMany(targetEntity: Student::class, mappedBy: 'level')]
+    private Collection $students;
+
     public function __construct()
     {
         $this->semesters = new ArrayCollection();
+        $this->students = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -65,14 +72,14 @@ class Level
         return $this;
     }
 
-    public function getFiled(): ?Field
+    public function getField(): ?Field
     {
-        return $this->filed;
+        return $this->field;
     }
 
-    public function setFiled(?Field $filed): static
+    public function setField(?Field $field): static
     {
-        $this->filed = $filed;
+        $this->field = $field;
 
         return $this;
     }
@@ -101,6 +108,36 @@ class Level
             // set the owning side to null (unless already changed)
             if ($semester->getLevel() === $this) {
                 $semester->setLevel(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Student>
+     */
+    public function getStudents(): Collection
+    {
+        return $this->students;
+    }
+
+    public function addStudent(Student $student): static
+    {
+        if (!$this->students->contains($student)) {
+            $this->students->add($student);
+            $student->setLevel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudent(Student $student): static
+    {
+        if ($this->students->removeElement($student)) {
+            // set the owning side to null (unless already changed)
+            if ($student->getLevel() === $this) {
+                $student->setLevel(null);
             }
         }
 
