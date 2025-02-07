@@ -1,4 +1,3 @@
-{# templates/user/register_student.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Inscription Étudiant{% endblock %}
@@ -14,8 +13,18 @@
         {% endfor %}
 
         {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <button type="submit" class="btn btn-primary">S'inscrire</button>
+        {{ form_row(form.username) }}
+        {{ form_row(form.password) }}
+        {{ form_row(form.phoneNumber) }}
+        {{ form_row(form.profilePhoto) }}
+        {{ form_row(form.cni) }}
+        {{ form_row(form.firstName) }}
+        {{ form_row(form.lastName) }}
+        {{ form_row(form.sex) }}
+        {{ form_row(form.dateOfBirth) }}
+        {{ form_row(form.placeOfBirth) }}
+        {{ form_row(form.matricule) }}
+        <button type="submit" class="btn btn-primary">S'inscrire</button>
         {{ form_end(form) }}
     </div>
 {% endblock %}
