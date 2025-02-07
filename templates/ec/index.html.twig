@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EC index{% endblock %}
+
+{% block body %}
+    <h1>EC index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Credit</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for e_c in e_cs %}
+            <tr>
+                <td>{{ e_c.id }}</td>
+                <td>{{ e_c.name }}</td>
+                <td>{{ e_c.code }}</td>
+                <td>{{ e_c.credit }}</td>
+                <td>
+                    <a href="{{ path('app_e_c_show', {'id': e_c.id}) }}">show</a>
+                    <a href="{{ path('app_e_c_edit', {'id': e_c.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_e_c_new') }}">Create new</a>
+{% endblock %}

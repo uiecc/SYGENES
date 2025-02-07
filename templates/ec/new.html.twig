@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New EC{% endblock %}
+
+{% block body %}
+    <h1>Create new EC</h1>
+
+    {{ include('ec/_form.html.twig') }}
+
+    <a href="{{ path('app_e_c_index') }}">back to list</a>
+{% endblock %}
