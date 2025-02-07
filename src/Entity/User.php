@@ -15,7 +15,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\DiscriminatorColumn(name: "type", type: "string")]
 #[ORM\DiscriminatorMap([
     "student" => "Student",
-    "responsable" => "Responsable"
+    "responsable" => "Responsable",
+    "administrator" => "Administrator",
+    "base_responsable" => "Responsable",
+    "school_manager" => "SchoolManager",
+    "field_manager" => "FieldManager",
+    "level_manager" => "LevelManager",
+    "ue_manager" => "UEManager",
+    "teacher" => "Teacher"
+
+
 ])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -43,6 +52,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+    // Ajoutez cette propriété si elle n'existe pas
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $phoneNumber = null;
@@ -187,7 +199,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
 
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+        return $this;
+    }
     public function getFirstName(): ?string
     {
         return $this->firstName;

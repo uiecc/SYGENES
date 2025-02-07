@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Teacher{% endblock %}
+
+{% block body %}
+    <h1>Teacher</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ teacher.id }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ teacher.username }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ teacher.password }}</td>
+            </tr>
+            <tr>
+                <th>PhoneNumber</th>
+                <td>{{ teacher.phoneNumber }}</td>
+            </tr>
+            <tr>
+                <th>ProfilePhoto</th>
+                <td>{{ teacher.profilePhoto }}</td>
+            </tr>
+            <tr>
+                <th>Cni</th>
+                <td>{{ teacher.cni }}</td>
+            </tr>
+            <tr>
+                <th>FirstName</th>
+                <td>{{ teacher.firstName }}</td>
+            </tr>
+            <tr>
+                <th>LastName</th>
+                <td>{{ teacher.lastName }}</td>
+            </tr>
+            <tr>
+                <th>IsActive</th>
+                <td>{{ teacher.isActive ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ teacher.createdAt ? teacher.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CodeResp</th>
+                <td>{{ teacher.codeResp }}</td>
+            </tr>
+            <tr>
+                <th>Function</th>
+                <td>{{ teacher.function }}</td>
+            </tr>
+            <tr>
+                <th>Department</th>
+                <td>{{ teacher.department }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_teacher_index') }}">back to list</a>
+
+    <a href="{{ path('app_teacher_edit', {'id': teacher.id}) }}">edit</a>
+
+    {{ include('teacher/_delete_form.html.twig') }}
+{% endblock %}

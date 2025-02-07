@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New UEManager{% endblock %}
+
+{% block body %}
+    <h1>Create new UEManager</h1>
+
+    {{ include('ue_manager/_form.html.twig') }}
+
+    <a href="{{ path('app_u_e_manager_index') }}">back to list</a>
+{% endblock %}

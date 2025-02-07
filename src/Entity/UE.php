@@ -34,6 +34,9 @@ class UE
     #[ORM\OneToMany(targetEntity: EC::class, mappedBy: 'ue')]
     private Collection $eCs;
 
+    #[ORM\OneToOne(mappedBy: 'ue', cascade: ['persist', 'remove'])]
+    private ?UEManager $uEManager = null;
+
     public function __construct()
     {
         $this->eCs = new ArrayCollection();
@@ -118,6 +121,28 @@ class UE
                 $eC->setUe(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUEManager(): ?UEManager
+    {
+        return $this->uEManager;
+    }
+
+    public function setUEManager(?UEManager $uEManager): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($uEManager === null && $this->uEManager !== null) {
+            $this->uEManager->setUe(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($uEManager !== null && $uEManager->getUe() !== $this) {
+            $uEManager->setUe($this);
+        }
+
+        $this->uEManager = $uEManager;
 
         return $this;
     }

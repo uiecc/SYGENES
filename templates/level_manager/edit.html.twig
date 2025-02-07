@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit LevelManager{% endblock %}
+
+{% block body %}
+    <h1>Edit LevelManager</h1>
+
+    {{ include('level_manager/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_level_manager_index') }}">back to list</a>
+
+    {{ include('level_manager/_delete_form.html.twig') }}
+{% endblock %}

@@ -27,6 +27,9 @@ class EC
     #[ORM\Column]
     private ?int $credit = null;
 
+    #[ORM\OneToOne(mappedBy: 'ec', cascade: ['persist', 'remove'])]
+    private ?Teacher $teacher = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,6 +82,28 @@ class EC
         $this->credit = $credit;
 
         
+        return $this;
+    }
+
+    public function getTeacher(): ?Teacher
+    {
+        return $this->teacher;
+    }
+
+    public function setTeacher(?Teacher $teacher): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($teacher === null && $this->teacher !== null) {
+            $this->teacher->setEc(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($teacher !== null && $teacher->getEc() !== $this) {
+            $teacher->setEc($this);
+        }
+
+        $this->teacher = $teacher;
+
         return $this;
     }
 }

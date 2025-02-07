@@ -36,6 +36,9 @@ class University
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logo = null;
 
+    #[ORM\OneToOne(mappedBy: 'university', cascade: ['persist', 'remove'])]
+    private ?Administrator $administrator = null;
+
     public function __construct()
     {
         $this->schools = new ArrayCollection();
@@ -132,6 +135,28 @@ class University
     public function setLogo(?string $logo): static
     {
         $this->logo = $logo;
+
+        return $this;
+    }
+
+    public function getAdministrator(): ?Administrator
+    {
+        return $this->administrator;
+    }
+
+    public function setAdministrator(?Administrator $administrator): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($administrator === null && $this->administrator !== null) {
+            $this->administrator->setUniversity(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($administrator !== null && $administrator->getUniversity() !== $this) {
+            $administrator->setUniversity($this);
+        }
+
+        $this->administrator = $administrator;
 
         return $this;
     }

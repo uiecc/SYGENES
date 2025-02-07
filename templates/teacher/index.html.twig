@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Teacher index{% endblock %}
+
+{% block body %}
+    <h1>Teacher index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>PhoneNumber</th>
+                <th>ProfilePhoto</th>
+                <th>Cni</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>IsActive</th>
+                <th>CreatedAt</th>
+                <th>CodeResp</th>
+                <th>Function</th>
+                <th>Department</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for teacher in teachers %}
+            <tr>
+                <td>{{ teacher.id }}</td>
+                <td>{{ teacher.username }}</td>
+                <td>{{ teacher.password }}</td>
+                <td>{{ teacher.phoneNumber }}</td>
+                <td>{{ teacher.profilePhoto }}</td>
+                <td>{{ teacher.cni }}</td>
+                <td>{{ teacher.firstName }}</td>
+                <td>{{ teacher.lastName }}</td>
+                <td>{{ teacher.isActive ? 'Yes' : 'No' }}</td>
+                <td>{{ teacher.createdAt ? teacher.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ teacher.codeResp }}</td>
+                <td>{{ teacher.function }}</td>
+                <td>{{ teacher.department }}</td>
+                <td>
+                    <a href="{{ path('app_teacher_show', {'id': teacher.id}) }}">show</a>
+                    <a href="{{ path('app_teacher_edit', {'id': teacher.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="14">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_teacher_new') }}">Create new</a>
+{% endblock %}

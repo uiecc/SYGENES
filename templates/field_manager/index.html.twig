@@ -1,0 +1,54 @@
+{# templates/field_manager/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Responsables de Filière{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Responsables de Filière</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <a href="{{ path('app_field_manager_new') }}" class="btn btn-primary mb-3">
+            Ajouter un responsable de filière
+        </a>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom complet</th>
+                    <th>Email</th>
+                    <th>Code</th>
+                    <th>Filière</th>
+                    <th>École</th>
+                    <th>Université</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for manager in field_managers %}
+                <tr>
+                    <td>{{ manager.firstName }} {{ manager.lastName }}</td>
+                    <td>{{ manager.email }}</td>
+                    <td>{{ manager.codeResp }}</td>
+                    <td>{{ manager.field.name }}</td>
+                    <td>{{ manager.field.school.name }}</td>
+                    <td>{{ manager.field.school.university.name }}</td>
+                    <td>
+                        <a href="{{ path('app_field_manager_show', {'id': manager.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                        <a href="{{ path('app_field_manager_edit', {'id': manager.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">Aucun responsable de filière trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

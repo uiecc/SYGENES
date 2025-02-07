@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administrator index{% endblock %}
+
+{% block body %}
+    <h1>Administrator index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>PhoneNumber</th>
+                <th>ProfilePhoto</th>
+                <th>Cni</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>IsActive</th>
+                <th>CreatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for administrator in administrators %}
+            <tr>
+                <td>{{ administrator.id }}</td>
+                <td>{{ administrator.username }}</td>
+                <td>{{ administrator.password }}</td>
+                <td>{{ administrator.phoneNumber }}</td>
+                <td>{{ administrator.profilePhoto }}</td>
+                <td>{{ administrator.cni }}</td>
+                <td>{{ administrator.firstName }}</td>
+                <td>{{ administrator.lastName }}</td>
+                <td>{{ administrator.isActive ? 'Yes' : 'No' }}</td>
+                <td>{{ administrator.createdAt ? administrator.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_administrator_show', {'id': administrator.id}) }}">show</a>
+                    <a href="{{ path('app_administrator_edit', {'id': administrator.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_administrator_new') }}">Create new</a>
+{% endblock %}

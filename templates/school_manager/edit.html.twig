@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit SchoolManager{% endblock %}
+
+{% block body %}
+    <h1>Edit SchoolManager</h1>
+
+    {{ include('school_manager/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_school_manager_index') }}">back to list</a>
+
+    {{ include('school_manager/_delete_form.html.twig') }}
+{% endblock %}

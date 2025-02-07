@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UEManager index{% endblock %}
+
+{% block body %}
+    <h1>UEManager index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>PhoneNumber</th>
+                <th>ProfilePhoto</th>
+                <th>Cni</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>IsActive</th>
+                <th>CreatedAt</th>
+                <th>CodeResp</th>
+                <th>Function</th>
+                <th>Department</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for u_e_manager in u_e_managers %}
+            <tr>
+                <td>{{ u_e_manager.id }}</td>
+                <td>{{ u_e_manager.username }}</td>
+                <td>{{ u_e_manager.password }}</td>
+                <td>{{ u_e_manager.phoneNumber }}</td>
+                <td>{{ u_e_manager.profilePhoto }}</td>
+                <td>{{ u_e_manager.cni }}</td>
+                <td>{{ u_e_manager.firstName }}</td>
+                <td>{{ u_e_manager.lastName }}</td>
+                <td>{{ u_e_manager.isActive ? 'Yes' : 'No' }}</td>
+                <td>{{ u_e_manager.createdAt ? u_e_manager.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ u_e_manager.codeResp }}</td>
+                <td>{{ u_e_manager.function }}</td>
+                <td>{{ u_e_manager.department }}</td>
+                <td>
+                    <a href="{{ path('app_u_e_manager_show', {'id': u_e_manager.id}) }}">show</a>
+                    <a href="{{ path('app_u_e_manager_edit', {'id': u_e_manager.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="14">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_u_e_manager_new') }}">Create new</a>
+{% endblock %}

@@ -34,6 +34,9 @@ class School
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logo = null;
 
+    #[ORM\OneToOne(mappedBy: 'school', cascade: ['persist', 'remove'])]
+    private ?SchoolManager $schoolManager = null;
+
     public function __construct()
     {
         $this->fields = new ArrayCollection();
@@ -118,6 +121,28 @@ class School
     public function setLogo(?string $logo): static
     {
         $this->logo = $logo;
+
+        return $this;
+    }
+
+    public function getSchoolManager(): ?SchoolManager
+    {
+        return $this->schoolManager;
+    }
+
+    public function setSchoolManager(?SchoolManager $schoolManager): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($schoolManager === null && $this->schoolManager !== null) {
+            $this->schoolManager->setSchool(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($schoolManager !== null && $schoolManager->getSchool() !== $this) {
+            $schoolManager->setSchool($this);
+        }
+
+        $this->schoolManager = $schoolManager;
 
         return $this;
     }

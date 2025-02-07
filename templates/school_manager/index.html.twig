@@ -1,0 +1,50 @@
+{# templates/school_manager/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Responsables d'École{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Responsables d'École</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <a href="{{ path('app_school_manager_new') }}" class="btn btn-primary mb-3">
+            Ajouter un responsable d'école
+        </a>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom complet</th>
+                    <th>Email</th>
+                    <th>Code</th>
+                    <th>École</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for manager in school_managers %}
+                <tr>
+                    <td>{{ manager.firstName }} {{ manager.lastName }}</td>
+                    <td>{{ manager.email }}</td>
+                    <td>{{ manager.codeResp }}</td>
+                    <td>{{ manager.school.name }}</td>
+                    <td>
+                        <a href="{{ path('app_school_manager_show', {'id': manager.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                        <a href="{{ path('app_school_manager_edit', {'id': manager.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucun responsable d'école trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

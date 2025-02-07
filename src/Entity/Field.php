@@ -31,6 +31,9 @@ class Field
     #[ORM\OneToMany(targetEntity: Level::class, mappedBy: 'field')]
     private Collection $levels;
 
+    #[ORM\OneToOne(mappedBy: 'field', cascade: ['persist', 'remove'])]
+    private ?FieldManager $fieldManager = null;
+
     public function __construct()
     {
         $this->levels = new ArrayCollection();
@@ -103,6 +106,28 @@ class Field
                 $level->setField(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFieldManager(): ?FieldManager
+    {
+        return $this->fieldManager;
+    }
+
+    public function setFieldManager(?FieldManager $fieldManager): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($fieldManager === null && $this->fieldManager !== null) {
+            $this->fieldManager->setField(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($fieldManager !== null && $fieldManager->getField() !== $this) {
+            $fieldManager->setField($this);
+        }
+
+        $this->fieldManager = $fieldManager;
 
         return $this;
     }

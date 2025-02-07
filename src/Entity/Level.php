@@ -37,6 +37,9 @@ class Level
     #[ORM\OneToMany(targetEntity: Student::class, mappedBy: 'level')]
     private Collection $students;
 
+    #[ORM\OneToOne(mappedBy: 'level', cascade: ['persist', 'remove'])]
+    private ?LevelManager $levelManager = null;
+
     public function __construct()
     {
         $this->semesters = new ArrayCollection();
@@ -140,6 +143,28 @@ class Level
                 $student->setLevel(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLevelManager(): ?LevelManager
+    {
+        return $this->levelManager;
+    }
+
+    public function setLevelManager(?LevelManager $levelManager): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($levelManager === null && $this->levelManager !== null) {
+            $this->levelManager->setLevel(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($levelManager !== null && $levelManager->getLevel() !== $this) {
+            $levelManager->setLevel($this);
+        }
+
+        $this->levelManager = $levelManager;
 
         return $this;
     }
