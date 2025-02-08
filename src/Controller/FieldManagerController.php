@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-
+use app\Entity\Field;
 // src/Controller/FieldManagerController.php
-#[Route('/field/manager')]
+#[Route('/field-manager')]
 class FieldManagerController extends AbstractController
 {
     #[Route('/', name: 'app_field_manager_index', methods: ['GET'])]
@@ -28,13 +28,13 @@ class FieldManagerController extends AbstractController
             'field_managers' => $fieldManagers,
         ]);
     }
-
     #[Route('/new', name: 'app_field_manager_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request, 
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher
     ): Response {
+        
         $fieldManager = new FieldManager();
         $form = $this->createForm(FieldManagerType::class, $fieldManager);
         $form->handleRequest($request);
@@ -72,7 +72,7 @@ class FieldManagerController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_field_manager_show', methods: ['GET'])]
+    #[Route('/show/{id}', name: 'app_field_manager_show', methods: ['GET'])]
     public function show(FieldManager $fieldManager): Response
     {
         return $this->render('field_manager/show.html.twig', [
@@ -80,7 +80,7 @@ class FieldManagerController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_field_manager_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'app_field_manager_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, FieldManager $fieldManager, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(FieldManagerType::class, $fieldManager);
@@ -98,7 +98,7 @@ class FieldManagerController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_field_manager_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'app_field_manager_delete', methods: ['POST'])]
     public function delete(Request $request, FieldManager $fieldManager, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$fieldManager->getId(), $request->getPayload()->getString('_token'))) {

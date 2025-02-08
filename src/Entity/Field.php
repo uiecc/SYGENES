@@ -31,7 +31,7 @@ class Field
     #[ORM\OneToMany(targetEntity: Level::class, mappedBy: 'field')]
     private Collection $levels;
 
-    #[ORM\OneToOne(mappedBy: 'field', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'field', targetEntity: FieldManager::class)]
     private ?FieldManager $fieldManager = null;
 
     public function __construct()

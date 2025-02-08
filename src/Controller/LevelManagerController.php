@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/level/manager')]
+#[Route('/level-manager')]
 final class LevelManagerController extends AbstractController
 {
     #[Route(name: 'app_level_manager_index', methods: ['GET'])]

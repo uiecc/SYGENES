@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/e/c')]
+#[Route('/ec')]
 final class ECController extends AbstractController
 {
     #[Route(name: 'app_e_c_index', methods: ['GET'])]

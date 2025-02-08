@@ -59,8 +59,6 @@ class FieldManagerType extends AbstractType
                 },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('f')
-                        ->leftJoin('f.manager', 'm')
-                        ->where('m.id IS NULL')
                         ->orderBy('f.name', 'ASC');
                 },
                 'label' => 'Filière à gérer'
@@ -73,5 +71,4 @@ class FieldManagerType extends AbstractType
             'data_class' => FieldManager::class,
         ]);
     }
-
 }

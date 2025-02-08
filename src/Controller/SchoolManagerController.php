@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/school/manager')]
+#[Route('/school-manager')]
 class SchoolManagerController extends AbstractController
 {
     #[Route('/', name: 'app_school_manager_index', methods: ['GET'])]

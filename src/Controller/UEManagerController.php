@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/u/e/manager')]
+#[Route('/ue-manager')]
 final class UEManagerController extends AbstractController
 {
     #[Route(name: 'app_u_e_manager_index', methods: ['GET'])]
