@@ -11,6 +11,10 @@ git pull --quiet || exit 1
 echo "🛠 Vérification des différences de schéma..."
 php bin/console doctrine:schema:update --dump-sql > schema_changes.sql || exit 1
 
+echo "✅ Marquage des migrations existantes..."
+php bin/console make:migrations --add --all --no-interaction || exit 1
+
+
 echo "🔄 Synchronisation du stockage des migrations..."
 php bin/console doctrine:migrations:sync-metadata-storage --no-interaction || exit 1
 
