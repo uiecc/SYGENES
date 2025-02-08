@@ -15,7 +15,7 @@ echo "🔄 Synchronisation du stockage des migrations..."
 php bin/console doctrine:migrations:sync-metadata-storage --no-interaction || exit 1
 
 echo "✅ Marquage des migrations existantes..."
-php bin/console doctrine:migrations:version --add --all --no-interaction --no-confirmation || exit 1
+php bin/console doctrine:migrations:version --add --all --no-interaction || exit 1
 
 echo "🚀 Exécution des migrations..."
 if ! php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration; then
