@@ -4,6 +4,14 @@ set -e
 
 cd domains/sygenes.esign.cm/public_html || exit 1
 
+echo "🔧 Installation de Composer si non présent..."
+if [ ! -f "composer.phar" ]; then
+    echo "📥 Téléchargement de Composer..."
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    php composer-setup.php
+    php -r "unlink('composer-setup.php');"
+fi
+
 echo "🔄 Sauvegarde et reset..."
 git reset --hard HEAD
 git clean -fd
