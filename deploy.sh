@@ -1,47 +1,40 @@
 #!/bin/bash
 
-# Se déplacer dans le répertoire du projet
+set -e  # Arrêter immédiatement le script en cas d'erreur
+
+echo "📂 Accès au répertoire du projet..."
 cd domains/sygenes.esign.cm/public_html || exit 1
 
-# Mettre à jour le dépôt Git sans interaction
+echo "🔄 Mise à jour du dépôt Git..."
 git pull --quiet || exit 1
 
-# Vérifier les différences de schéma
-echo "Vérification des différences de schéma..."
-php bin/console doctrine:schema:update --dump-sql > schema_changes.sql
+echo "🛠 Vérification des différences de schéma..."
+php bin/console doctrine:schema:update --dump-sql > schema_changes.sql || exit 1
 
-# Synchroniser les migrations
-echo "Synchronisation des migrations..."
-php bin/console doctrine:migrations:sync-metadata-storage --no-interaction
+echo "🔄 Synchronisation du stockage des migrations..."
+php bin/console doctrine:migrations:sync-metadata-storage --no-interaction || exit 1
 
-# Marquer les migrations précédentes comme exécutées
-echo "Marquage des migrations existantes..."
-php bin/console doctrine:migrations:version --add --all --no-interaction
+echo "✅ Marquage des migrations existantes..."
+php bin/console doctrine:migrations:version --add --all --no-interaction --no-confirmation || exit 1
 
-# Tenter d'appliquer les migrations de manière sécurisée
+echo "🚀 Exécution des migrations..."
 if ! php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration; then
-    echo "Première tentative de migration échouée, tentative de synchronisation du schéma..."
+    echo "⚠️ Migration échouée, forçage de la mise à jour du schéma..."
     
-    # Si la migration échoue, essayer de synchroniser le schéma
-    if php bin/console doctrine:schema:update --force --no-interaction; then
-        echo "Schéma synchronisé avec succès"
-        
-        # Réessayer les migrations après la synchronisation
-        if ! php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration; then
-            echo "La migration a échoué même après synchronisation du schéma"
-            exit 1
-        fi
-    else
-        echo "La synchronisation du schéma a échoué"
+    php bin/console doctrine:schema:update --force --no-interaction
+    echo "✅ Schéma mis à jour avec succès"
+
+    echo "🔄 Nouvelle tentative d'exécution des migrations..."
+    if ! php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration; then
+        echo "❌ La migration a échoué même après mise à jour du schéma"
         exit 1
     fi
 fi
 
-# Mettre à jour les dépendances Composer
-echo "Mise à jour des dépendances..."
-php composer.phar update --no-interaction --no-progress --prefer-dist || exit 1
+echo "📦 Mise à jour des dépendances Composer..."
+php composer.phar install --no-interaction --no-progress --prefer-dist || exit 1
 
-# Nettoyer
+echo "🧹 Nettoyage des fichiers temporaires..."
 rm -f schema_changes.sql
 
-echo "Déploiement terminé avec succès"
+echo "✅ Déploiement terminé avec succès"
