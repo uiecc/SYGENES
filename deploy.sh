@@ -14,3 +14,5 @@ echo "📦 Mise à jour des dépendances..."
 php composer.phar install --no-interaction --no-progress --prefer-dist || exit 1
 
 echo "✅ Déploiement terminé"
+php bin/console tailwind:build --minify
+php bin/console asset-map:compile

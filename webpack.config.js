@@ -5,10 +5,15 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 }
 
 Encore
+    .enablePostCssLoader()
+
     .setOutputPath('public/build/')
     .setPublicPath('/build')
     .addEntry('app', './assets/app.js')
     .splitEntryChunks()
+
+    // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
+    .enableStimulusBridge('./assets/controllers.json')
     .enableSingleRuntimeChunk()
     .enableStimulusBridge('./assets/controllers.json')
     .cleanupOutputBeforeBuild()
