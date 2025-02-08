@@ -14,7 +14,7 @@ echo "📦 Restauration des modifications locales..."
 git stash pop || exit 0  # Ignore les erreurs si rien n'est à restaurer
 
 echo "📦 Mise à jour des dépendances..."
-php composer.phar install --no-interaction --no-progress --prefer-dist || exit 1
+php composer install --no-interaction --no-progress --prefer-dist || exit 1
 
 echo "🔄 Mise à jour du schéma de la base de données..."
 php bin/console doctrine:schema:update --force --no-interaction || exit 1
