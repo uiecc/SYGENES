@@ -12,7 +12,7 @@ class Responsable extends User
     private ?string $codeResp = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $function = null;
+    private ?string $fonction = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $department = null;
@@ -28,14 +28,14 @@ class Responsable extends User
         return $this;
     }
 
-    public function getFunction(): ?string
+    public function getFonction(): ?string
     {
-        return $this->function;
+        return $this->fonction;
     }
 
-    public function setFunction(?string $function): static
+    public function setFonction(?string $fonction): static
     {
-        $this->function = $function;
+        $this->fonction = $fonction;
         return $this;
     }
 

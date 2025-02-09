@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Administrator;
 use App\Form\AdministratorType;
 use App\Repository\AdministratorRepository;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,34 +30,40 @@ class AdministratorController extends AbstractController
 
     #[Route('/new', name: 'app_administrator_new', methods: ['GET', 'POST'])]
     public function new(
-        Request $request, 
+        Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        FileUploader $fileUploader
     ): Response {
         $administrator = new Administrator();
         $form = $this->createForm(AdministratorType::class, $administrator);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var FileUploader $profilePhoto */
+            if ($profilePhoto = $form->get('profilePhoto')->getData()) {
+                $fileName = $fileUploader->upload($profilePhoto);
+                $administrator->setProfilePhoto($fileName);
+            }    
             // Hash le mot de passe
             $hashedPassword = $passwordHasher->hashPassword(
                 $administrator,
                 $administrator->getPassword()
             );
             $administrator->setPassword($hashedPassword);
-
+    
             $entityManager->persist($administrator);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_administrator_index');
         }
-
+    
         return $this->render('administrator/new.html.twig', [
             'administrator' => $administrator,
             'form' => $form,
         ]);
     }
-
+    
     #[Route('/{id}', name: 'app_administrator_show', methods: ['GET'])]
     public function show(Administrator $administrator): Response
     {
@@ -86,7 +93,7 @@ class AdministratorController extends AbstractController
     #[Route('/{id}', name: 'app_administrator_delete', methods: ['POST'])]
     public function delete(Request $request, Administrator $administrator, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$administrator->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $administrator->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($administrator);
             $entityManager->flush();
         }

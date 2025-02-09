@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 class ResponsableType extends AbstractType
 {
@@ -17,13 +18,16 @@ class ResponsableType extends AbstractType
            ->add('username', TextType::class, [
                'label' => 'Nom d\'utilisateur'
            ])
+           ->add('email', EmailType::class, [
+               'label' => 'Email'
+           ])
            ->add('password', PasswordType::class, [
                'label' => 'Mot de passe'
            ])
            ->add('phoneNumber', TextType::class, [
                'label' => 'Téléphone'
            ])
-           ->add('profilePhoto', TextType::class, [
+           ->add('profilePhoto', FileType::class, [
                'label' => 'Photo de profil',
                'required' => false
            ])
@@ -38,6 +42,14 @@ class ResponsableType extends AbstractType
            ])
            ->add('codeResp', TextType::class, [
                'label' => 'Code Responsable'
+           ])
+           ->add('fonction', TextType::class, [
+               'label' => 'Fonction',
+               'required' => false
+           ])
+           ->add('department', TextType::class, [
+               'label' => 'Département',
+               'required' => false
            ])
        ;
    }

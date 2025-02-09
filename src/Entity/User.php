@@ -71,9 +71,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
-    #[ORM\Column]
-    private ?bool $isActive = null;
-
+    #[ORM\Column(type: "boolean", options: ["default" => false])]
+    private ?bool $isActive = false;
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 

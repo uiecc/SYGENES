@@ -1,12 +1,8 @@
 <?php
-
-// src/Form/AdministratorType.php
+// src/Form/UserProfileType.php
 namespace App\Form;
 
-use App\Entity\Administrator;
-use App\Entity\University;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -16,34 +12,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-class AdministratorType extends AbstractType
+class UserProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username', TextType::class, [
-                'label' => 'Nom d\'utilisateur'
-            ])
-            ->add('email', EmailType::class)
-            ->add('password', PasswordType::class, [
-                'label' => 'Mot de passe'
-            ])
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom'
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom'
             ])
-            ->add('university', EntityType::class, [
-                'class' => University::class,
-                'choice_label' => 'name',
-                'label' => 'Université',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('u')
-                        ->leftJoin('u.administrator', 'a')
-                        ->where('a.id IS NULL')
-                        ->orderBy('u.name', 'ASC');
-                },
+            ->add('email', EmailType::class, [
+                'label' => 'Email'
             ])
             ->add('phoneNumber', TextType::class, [
                 'label' => 'Téléphone'
@@ -63,17 +44,22 @@ class AdministratorType extends AbstractType
                     ])
                 ],
             ])
-            ->add('cni', TextType::class, [
-                'label' => 'cni'
+            ->add('currentPassword', PasswordType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Mot de passe actuel'
             ])
-
-            ;
+            ->add('newPassword', PasswordType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Nouveau mot de passe'
+            ]);        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Administrator::class,
+            'data_class' => User::class,
         ]);
     }
 }
