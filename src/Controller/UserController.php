@@ -124,9 +124,11 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/verify-code', name: 'app_verify_code')]
-    public function verifyCode(Request $request, VerificationCodeService $codeService): Response
-    {
+    #[Route('/verify-code', name: 'app_verify_code', methods: ['GET', 'POST'])]
+    public function verifyCode(
+        Request $request,
+        VerificationCodeService $codeService
+    ): Response {
         $user = $this->getUser();
 
         if (!$user || !$request->getSession()->get('needs_2fa_verification')) {
@@ -134,7 +136,12 @@ class UserController extends AbstractController
         }
 
         if ($request->isMethod('POST')) {
-            $code = $request->request->get('code');
+            if (!$this->isCsrfTokenValid('verify_code', $request->request->get('_csrf_token'))) {
+                $this->addFlash('error', 'Token CSRF invalide');
+                return $this->redirectToRoute('app_verify_code');
+            }
+
+            $code = $request->request->get('verification_code');
 
             if ($codeService->isCodeValid($user, $code)) {
                 $request->getSession()->remove('needs_2fa_verification');
@@ -144,11 +151,8 @@ class UserController extends AbstractController
             $this->addFlash('error', 'Code invalide ou expiré');
         }
 
-        return $this->render('user/verify_code.html.twig', [
-            'user' => $user
-        ]);
+        return $this->render('user/verify_code.html.twig');
     }
-
     #[Route('/resend-code', name: 'app_resend_code')]
     public function resendCode(Request $request, VerificationCodeService $codeService): Response
     {
