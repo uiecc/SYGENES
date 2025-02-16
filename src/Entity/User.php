@@ -33,6 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->userRoles = new ArrayCollection(); // Au lieu de new ArrayCollection()
         $this->createdAt = new \DateTimeImmutable();
+        $this->verificationCodes = new ArrayCollection();
     }
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -75,6 +76,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $isActive = false;
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    /**
+     * @var Collection<int, VerificationCode>
+     */
+    #[ORM\OneToMany(targetEntity: VerificationCode::class, mappedBy: 'user')]
+    private Collection $verificationCodes;
 
     public function getId(): ?int
     {
@@ -252,6 +259,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, VerificationCode>
+     */
+    public function getVerificationCodes(): Collection
+    {
+        return $this->verificationCodes;
+    }
+
+    public function addVerificationCode(VerificationCode $verificationCode): static
+    {
+        if (!$this->verificationCodes->contains($verificationCode)) {
+            $this->verificationCodes->add($verificationCode);
+            $verificationCode->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVerificationCode(VerificationCode $verificationCode): static
+    {
+        if ($this->verificationCodes->removeElement($verificationCode)) {
+            // set the owning side to null (unless already changed)
+            if ($verificationCode->getUser() === $this) {
+                $verificationCode->setUser(null);
+            }
+        }
 
         return $this;
     }

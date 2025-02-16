@@ -8,7 +8,9 @@ use App\Entity\Responsable;
 use App\Form\StudentType;
 use App\Form\ResponsableType;
 use App\Form\UserProfileType;
+use App\Repository\UserRepository;
 use App\Service\FileUploader;
+use App\Service\VerificationCodeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -103,21 +105,64 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
-    {
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
 
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
+    // src/Controller/UserController.php
+
+    #[Route('/login', name: 'app_login')]
+    public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
+    {
+        if ($this->getUser()) {
+            if ($request->getSession()->get('needs_2fa_verification')) {
+                return $this->redirectToRoute('app_verify_code');
+            }
+            return $this->redirectToRoute('app_home');
+        }
 
         return $this->render('user/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
+            'last_username' => $authenticationUtils->getLastUsername(),
+            'error' => $authenticationUtils->getLastAuthenticationError()
         ]);
     }
 
+    #[Route('/verify-code', name: 'app_verify_code')]
+    public function verifyCode(Request $request, VerificationCodeService $codeService): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user || !$request->getSession()->get('needs_2fa_verification')) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        if ($request->isMethod('POST')) {
+            $code = $request->request->get('code');
+
+            if ($codeService->isCodeValid($user, $code)) {
+                $request->getSession()->remove('needs_2fa_verification');
+                return $this->redirectToRoute('app_home');
+            }
+
+            $this->addFlash('error', 'Code invalide ou expiré');
+        }
+
+        return $this->render('user/verify_code.html.twig', [
+            'user' => $user
+        ]);
+    }
+
+    #[Route('/resend-code', name: 'app_resend_code')]
+    public function resendCode(Request $request, VerificationCodeService $codeService): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user || !$request->getSession()->get('needs_2fa_verification')) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $codeService->generateCode($user);
+        $this->addFlash('success', 'Un nouveau code a été envoyé');
+
+        return $this->redirectToRoute('app_verify_code');
+    }
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
@@ -126,70 +171,69 @@ class UserController extends AbstractController
     }
 
 
-        #[Route('/profile', name: 'app_profile_show', methods: ['GET'])]
-        public function show(): Response
-        {
-            $user = $this->getUser();
-            if (!$user) {
-                throw $this->createAccessDeniedException();
-            }
-    
-            return $this->render('user/show.html.twig', [
-                'user' => $user
-            ]);
+    #[Route('/profile', name: 'app_profile_show', methods: ['GET'])]
+    public function show(): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException();
         }
-    
-        #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
-        public function edit(
-            Request $request, 
-            EntityManagerInterface $entityManager,
-            UserPasswordHasherInterface $passwordHasher,
-            FileUploader $fileUploader
-        ): Response {
-            $user = $this->getUser();
-            if (!$user) {
-                throw $this->createAccessDeniedException();
-            }
-    
-            $form = $this->createForm(UserProfileType::class, $user);
-            $form->handleRequest($request);
-    
-            if ($form->isSubmitted() && $form->isValid()) {
-                // Gérer le changement de mot de passe
-                if ($newPassword = $form->get('newPassword')->getData()) {
-                    // Vérifier l'ancien mot de passe
-                    if (!$passwordHasher->isPasswordValid($user, $form->get('currentPassword')->getData())) {
-                        $form->get('currentPassword')->addError(new FormError('Mot de passe actuel incorrect'));
-                        return $this->render('profile/edit.html.twig', [
-                            'form' => $form->createView()
-                        ]);
-                    }
-                    $user->setPassword($passwordHasher->hashPassword($user, $newPassword));
-                }
-    
-                // Gérer la photo de profil
-                if ($photoFile = $form->get('profilePhoto')->getData()) {
-                    // Supprimer l'ancienne photo si elle existe
-                    if ($user->getProfilePhoto()) {
-                        $oldFile = $fileUploader->getTargetDirectory() . '/' . $user->getProfilePhoto();
-                        if (file_exists($oldFile)) {
-                            unlink($oldFile);
-                        }
-                    }
-                    
-                    $fileName = $fileUploader->upload($photoFile);
-                    $user->setProfilePhoto($fileName);
-                }
-    
-                $entityManager->flush();
-                $this->addFlash('success', 'Profil mis à jour avec succès');
-    
-                return $this->redirectToRoute('app_profile_show');
-            }
-    
-            return $this->render('user/edit.html.twig', [
-                'form' => $form->createView()
-            ]);
-        }
+
+        return $this->render('user/show.html.twig', [
+            'user' => $user
+        ]);
     }
-    
+
+    #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        FileUploader $fileUploader
+    ): Response {
+        $user = $this->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $form = $this->createForm(UserProfileType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Gérer le changement de mot de passe
+            if ($newPassword = $form->get('newPassword')->getData()) {
+                // Vérifier l'ancien mot de passe
+                if (!$passwordHasher->isPasswordValid($user, $form->get('currentPassword')->getData())) {
+                    $form->get('currentPassword')->addError(new FormError('Mot de passe actuel incorrect'));
+                    return $this->render('profile/edit.html.twig', [
+                        'form' => $form->createView()
+                    ]);
+                }
+                $user->setPassword($passwordHasher->hashPassword($user, $newPassword));
+            }
+
+            // Gérer la photo de profil
+            if ($photoFile = $form->get('profilePhoto')->getData()) {
+                // Supprimer l'ancienne photo si elle existe
+                if ($user->getProfilePhoto()) {
+                    $oldFile = $fileUploader->getTargetDirectory() . '/' . $user->getProfilePhoto();
+                    if (file_exists($oldFile)) {
+                        unlink($oldFile);
+                    }
+                }
+
+                $fileName = $fileUploader->upload($photoFile);
+                $user->setProfilePhoto($fileName);
+            }
+
+            $entityManager->flush();
+            $this->addFlash('success', 'Profil mis à jour avec succès');
+
+            return $this->redirectToRoute('app_profile_show');
+        }
+
+        return $this->render('user/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+}
