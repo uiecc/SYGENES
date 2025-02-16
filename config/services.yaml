@@ -24,7 +24,10 @@ services:
     App\EventListener\LoginListener:
         tags:
             - { name: kernel.event_listener, event: security.interactive_login }
-
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+            $verificationCodeService: '@App\Service\VerificationCodeService'
     # Configuration de l'écouteur de logout
     App\EventListener\LogoutListener:
         tags:

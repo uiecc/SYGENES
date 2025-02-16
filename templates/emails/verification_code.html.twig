@@ -1,0 +1,18 @@
+{# templates/emails/verification_code.html.twig #}
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #333;">Code de vérification</h2>
+    
+    <p>Bonjour {{ user.firstName }},</p>
+    
+    <p>Voici votre code de vérification pour finaliser votre connexion :</p>
+    
+    <div style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 24px; letter-spacing: 5px; margin: 20px 0;">
+        <strong>{{ code }}</strong>
+    </div>
+    
+    <p>Ce code expirera dans 3 minutes.</p>
+    
+    <p style="color: #666; font-size: 0.9em;">
+        Si vous n'avez pas demandé ce code, veuillez ignorer cet email.
+    </p>
+</div>

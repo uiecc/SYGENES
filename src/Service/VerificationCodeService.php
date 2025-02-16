@@ -7,28 +7,36 @@ use App\Entity\VerificationCode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Twig\Environment;
 
 class VerificationCodeService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private MailerInterface $mailer
+        private MailerInterface $mailer,
+        private Environment $twig  // Ajoutez Twig
     ) {}
 
     public function generateCode(User $user): VerificationCode
     {
-        $code = new VerificationCode($user);
-        $this->entityManager->persist($code);
-        $this->entityManager->flush();
-
-        // Envoyer par email
-        $this->sendCodeByEmail($user, $code->getCode());
-        // Envoyer par SMS (à implémenter avec un service SMS)
-        $this->sendCodeBySMS($user, $code->getCode());
-
-        return $code;
+        try {
+            $code = new VerificationCode($user);
+            $this->entityManager->persist($code);
+            $this->entityManager->flush();
+    
+            // Debug - log la création du code
+            error_log("Code généré : " . $code->getCode() . " pour " . $user->getEmail());
+    
+            // Envoyer par email
+            $this->sendCodeByEmail($user, $code->getCode());
+    
+            return $code;
+        } catch (\Exception $e) {
+            // Debug - log l'erreur
+            error_log("Erreur dans generateCode : " . $e->getMessage());
+            throw $e;
+        }
     }
-
     public function isCodeValid(User $user, string $code): bool
     {
         $verificationCode = $this->entityManager
@@ -55,13 +63,30 @@ class VerificationCodeService
 
     private function sendCodeByEmail(User $user, string $code): void
     {
-        $email = (new Email())
-            ->from('no-reply@your-domain.com')
-            ->to($user->getEmail())
-            ->subject('Code de vérification')
-            ->html("<p>Votre code de vérification est : $code</p><p>Il expirera dans 3 minutes.</p>");
+        try {
+            error_log("Tentative d'envoi d'email à " . $user->getEmail());
 
-        $this->mailer->send($email);
+            $email = (new Email())
+                ->from('uiecc@esign.cm')  // Votre adresse email configurée
+                ->to($user->getEmail())
+                ->subject('Code de vérification - SYGENES')
+                ->html(
+                    $this->twig->render(
+                        'emails/verification_code.html.twig',
+                        [
+                            'user' => $user,
+                            'code' => $code
+                        ]
+                    )
+                );
+
+            $this->mailer->send($email);
+            error_log("Email envoyé avec succès à " . $user->getEmail());
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            // Log l'erreur ou gérez-la comme vous le souhaitez
+            throw new \Exception('Erreur lors de l\'envoi de l\'email: ' . $e->getMessage());
+        }
     }
 
     private function sendCodeBySMS(User $user, string $code): void

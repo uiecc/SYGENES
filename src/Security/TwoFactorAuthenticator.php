@@ -43,13 +43,27 @@ class TwoFactorAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Générer le code de vérification
-        $this->verificationCodeService->generateCode($token->getUser());
-        $request->getSession()->set('needs_2fa_verification', true);
-
-        return new RedirectResponse($this->router->generate('app_verify_code'));
+        try {
+            // Récupérer l'utilisateur
+            $user = $token->getUser();
+            
+            // Générer et envoyer le code de vérification
+            $verificationCode = $this->verificationCodeService->generateCode($user);
+            
+            // Debug - ajoutez ces lignes temporairement
+            dump("Code généré : " . $verificationCode->getCode());
+            dump("Pour l'utilisateur : " . $user->getEmail());
+    
+            // Marquer que l'utilisateur a besoin de vérification
+            $request->getSession()->set('needs_2fa_verification', true);
+    
+            return new RedirectResponse($this->router->generate('app_verify_code'));
+        } catch (\Exception $e) {
+            // Debug - log l'erreur
+            dump("Erreur lors de l'envoi du code : " . $e->getMessage());
+            throw $e;
+        }
     }
-
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         if ($request->hasSession()) {

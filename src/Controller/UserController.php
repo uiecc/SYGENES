@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Student;
 use App\Entity\Role;
 use App\Entity\Responsable;
+use App\Entity\User;
 use App\Form\StudentType;
 use App\Form\ResponsableType;
 use App\Form\UserProfileType;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class UserController extends AbstractController
@@ -111,48 +113,74 @@ class UserController extends AbstractController
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
-        if ($this->getUser()) {
-            if ($request->getSession()->get('needs_2fa_verification')) {
-                return $this->redirectToRoute('app_verify_code');
-            }
+        // Rediriger si déjà authentifié complètement
+        if ($this->getUser() && $request->getSession()->get('is_fully_authenticated')) {
             return $this->redirectToRoute('app_home');
         }
-
+    
+        // Rediriger vers la vérification si en cours
+        if ($request->getSession()->get('needs_2fa_verification')) {
+            return $this->redirectToRoute('app_verify_code');
+        }
+    
         return $this->render('user/login.html.twig', [
             'last_username' => $authenticationUtils->getLastUsername(),
             'error' => $authenticationUtils->getLastAuthenticationError()
         ]);
     }
-
+    
     #[Route('/verify-code', name: 'app_verify_code', methods: ['GET', 'POST'])]
     public function verifyCode(
         Request $request,
-        VerificationCodeService $codeService
+        VerificationCodeService $codeService,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
     ): Response {
-        $user = $this->getUser();
-
-        if (!$user || !$request->getSession()->get('needs_2fa_verification')) {
+        // Rediriger si déjà authentifié complètement
+        if ($this->getUser() && $request->getSession()->get('is_fully_authenticated')) {
+            return $this->redirectToRoute('app_home');
+        }
+    
+        // Vérifier si un code est en attente de vérification
+        $pendingUserId = $request->getSession()->get('pending_user_id');
+        if (!$pendingUserId) {
             return $this->redirectToRoute('app_login');
         }
-
+    
+        $user = $entityManager->getRepository(User::class)->find($pendingUserId);
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+    
         if ($request->isMethod('POST')) {
-            if (!$this->isCsrfTokenValid('verify_code', $request->request->get('_csrf_token'))) {
-                $this->addFlash('error', 'Token CSRF invalide');
-                return $this->redirectToRoute('app_verify_code');
-            }
-
             $code = $request->request->get('verification_code');
-
+            
             if ($codeService->isCodeValid($user, $code)) {
+                // Authentifier complètement l'utilisateur
+                $request->getSession()->set('is_fully_authenticated', true);
                 $request->getSession()->remove('needs_2fa_verification');
+                $request->getSession()->remove('pending_user_id');
+    
+                // Connecter manuellement l'utilisateur
+                $token = new UsernamePasswordToken(
+                    $user,
+                    'main',
+                    $user->getRoles()
+                );
+                $this->container->get('security.token_storage')->setToken($token);
+                $request->getSession()->set('_security_main', serialize($token));
+    
                 return $this->redirectToRoute('app_home');
             }
-
+            
             $this->addFlash('error', 'Code invalide ou expiré');
         }
-
-        return $this->render('user/verify_code.html.twig');
+    
+        return $this->render('user/verify_code.html.twig', [
+            'user' => $user
+        ]);
     }
+    
     #[Route('/resend-code', name: 'app_resend_code')]
     public function resendCode(Request $request, VerificationCodeService $codeService): Response
     {
