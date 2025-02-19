@@ -1,0 +1,59 @@
+theme:
+    light: 'Light'
+    dark: 'Dark'
+language:
+    english: 'English'
+    french: 'French'
+
+# Base Login Translations
+base_login:
+    login: 'Login'
+    features: 'Features'
+    pricing: 'Pricing'
+    contact: 'Contact Us'
+    faq: 'FAQ'
+    documentation: 'Documentation'
+    blog: 'Blog'
+
+    footer:
+        about: 'About Us'
+        blog: 'Blog'
+        jobs: 'Jobs'
+        press: 'Press'
+        accessibility: 'Accessibility'
+        partners: 'Partners'
+        contact: 'Contact Us'
+        privacy: 'Privacy Policy'
+        terms: 'Terms of Service'
+        
+  
+# Base Empty Translations
+base_empty:
+    title: 'No Data Found'
+    description: 'No data found for the selected criteria'
+    action: 'Refresh'
+
+
+# Base Dashboard Translations
+base_dashboard:
+    dashboard: 'Dashboard'
+    settings: 'Settings'
+    logout: 'Logout'
+
+
+# Login Page Translations
+login_page:
+    title: 'Login'
+    email: 'Email'
+    password: 'Password'
+    remember_me: 'Remember Me'
+    forgot_password: 'Forgot Password?'
+    header: 'Login to your account'
+  
+
+# Dashboard Page Translations
+
+
+# Intermediate Pages Translations
+
+

@@ -1,14 +1,21 @@
 {# templates/user/login.html.twig #}
-{% extends 'base.html.twig' %}
+{% extends 'base_empty.html.twig' %}
 
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
     <div class="min-h-screen flex items-center justify-center">
         <div class="max-w-md w-full space-y-8">
+        <div class="debug-info" style="display: none;">
+    Current Locale: {{ app.request.locale }}
+    Features Translation: {{ 'base_login.features'|trans }}
+    Documentation Translation: {{ 'base_login.documentation'|trans }}
+    Pricing Translation: {{ 'base_login.pricing'|trans }}
+</div>
             <div>
+            
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    Connexion à votre compte
+                    {{ 'login_page.header'| trans }}
                 </h2>
             </div>
             <form class="mt-8 space-y-6" action="{{ path('app_login') }}" method="post">

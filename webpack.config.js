@@ -9,17 +9,23 @@ Encore
 
     .setOutputPath('public/build/')
     .setPublicPath('/build')
+    .enableStimulusPlugin()
     .addEntry('app', './assets/app.js')
     .splitEntryChunks()
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
-    .enableStimulusBridge('./assets/controllers.json')
+
     .enableSingleRuntimeChunk()
     .enableStimulusBridge('./assets/controllers.json')
     .cleanupOutputBeforeBuild()
     .enableBuildNotifications()
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(Encore.isProduction())
+    .configureResolve({
+        alias: {
+            '@symfony/stimulus-bridge': path.resolve(__dirname, 'node_modules/@symfony/stimulus-bridge'),
+        },
+    })
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = 'usage';
         config.corejs = '3.38';
