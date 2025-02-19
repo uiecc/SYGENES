@@ -24,6 +24,4 @@ npm-debug.log
 yarn-error.log
 
 # Ignorer les fichiers générés par Symfony Asset Mapper
-/public/assets/
-/public/build/
 /assets/vendor/
