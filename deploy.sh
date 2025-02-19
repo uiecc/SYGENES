@@ -19,6 +19,5 @@ php composer.phar install --no-interaction --no-progress --prefer-dist || exit 1
 echo "🔄 Mise à jour du schéma de la base de données..."
 php bin/console doctrine:schema:update --force --no-interaction || exit 1
 
-php bin/console tailwind:build --minify
 php bin/console asset-map:compile
 echo "✅ Déploiement terminé"
