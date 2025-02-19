@@ -1,16 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
   content: [
-    "./assets/**/*.js",
-    "./templates/**/*.html.twig",
+    "./assets/**/*.{js,jsx,ts,tsx}",
+    "./templates/**/*.{html,html.twig}",
+    "./assets/styles/**/*.css"
   ],
   theme: {
-    extend: {
-      colors: {
-        'custom-orange': '#EA580C', // This is your variable
-      },
-    },
+    extend: {},
   },
   plugins: [],
 }
