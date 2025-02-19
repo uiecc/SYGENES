@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Import Excel{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Import d'étudiants via Excel</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {{ form_start(form) }}
+            {{ form_row(form.file) }}
+            <button type="submit" class="btn btn-primary">Importer</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

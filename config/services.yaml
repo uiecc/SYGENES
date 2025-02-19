@@ -28,7 +28,14 @@ services:
             $entityManager: '@doctrine.orm.entity_manager'
             $requestStack: '@request_stack'
             $verificationCodeService: '@App\Service\VerificationCodeService'
+
     # Configuration de l'écouteur de logout
     App\EventListener\LogoutListener:
         tags:
             - { name: kernel.event_listener, event: Symfony\Component\Security\Http\Event\LogoutEvent }
+
+    # Configuration du service ExcelImportService
+    App\Service\ExcelImportService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $passwordHasher: '@security.password_hasher'

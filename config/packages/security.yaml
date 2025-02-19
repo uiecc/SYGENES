@@ -27,6 +27,6 @@ security:
         - { path: ^/verify-code, roles: PUBLIC_ACCESS }
         - { path: ^/resend-code, roles: PUBLIC_ACCESS }
         - { path: ^/field-manager/new, roles: PUBLIC_ACCESS }
-        - { path: ^/administrator/new, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/new, roles: PUBLIC_ACCESS }
         - { path: ^/university/new, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: ROLE_USER }

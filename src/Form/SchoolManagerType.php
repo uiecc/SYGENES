@@ -9,7 +9,9 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -36,7 +38,7 @@ class SchoolManagerType extends AbstractType
             ->add('codeResp', TextType::class, [
                 'label' => 'Code Responsable'
             ])
-            ->add('function', TextType::class, [
+            ->add('fonction', TextType::class, [
                 'label' => 'Fonction',
                 'required' => false
             ])
@@ -44,6 +46,20 @@ class SchoolManagerType extends AbstractType
                 'label' => 'Département',
                 'required' => false
             ])
+            ->add('profilePhoto', FileType::class, [
+                'required' => false
+            ])
+            ->add('phoneNumber', TelType::class, [
+                'label' => 'Numéro de téléphone',
+                'required' => false
+            ])     
+            
+            ->add('CNI', TextType::class, [
+                'label' => 'CNI',
+                'required' => false
+            ])            
+
+
             // Champ spécifique au SchoolManager
             ->add('school', EntityType::class, [
                 'class' => School::class,
@@ -55,7 +71,7 @@ class SchoolManagerType extends AbstractType
                 },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('s')
-                        ->leftJoin('s.manager', 'm')
+                        ->leftJoin('s.schoolManager', 'm') 
                         ->where('m.id IS NULL')
                         ->orderBy('s.name', 'ASC');
                 },

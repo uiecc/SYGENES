@@ -9,7 +9,9 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,10 +27,22 @@ class LevelManagerType extends AbstractType
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('codeResp', TextType::class)
-            ->add('function', TextType::class, [
+            ->add('fonction', TextType::class, [
                 'label' => 'Fonction',
                 'required' => false
             ])
+            ->add('profilePhoto', FileType::class, [
+                'required' => false
+            ])
+            ->add('phoneNumber', TelType::class, [
+                'label' => 'Numéro de téléphone',
+                'required' => false
+            ])
+            ->add('CNI', TextType::class, [
+                'label' => 'CNI',
+                'required' => false
+            ])
+            
             ->add('department', TextType::class, [
                 'label' => 'Département',
                 'required' => false
@@ -46,7 +60,7 @@ class LevelManagerType extends AbstractType
                 },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('l')
-                        ->leftJoin('l.manager', 'm')
+                        ->leftJoin('l.levelManager', 'm')
                         ->where('m.id IS NULL')
                         ->orderBy('l.name', 'ASC');
                 },

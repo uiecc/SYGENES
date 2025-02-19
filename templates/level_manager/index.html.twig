@@ -10,7 +10,6 @@
             <tr>
                 <th>Id</th>
                 <th>Username</th>
-                <th>Password</th>
                 <th>PhoneNumber</th>
                 <th>ProfilePhoto</th>
                 <th>Cni</th>
@@ -29,7 +28,6 @@
             <tr>
                 <td>{{ level_manager.id }}</td>
                 <td>{{ level_manager.username }}</td>
-                <td>{{ level_manager.password }}</td>
                 <td>{{ level_manager.phoneNumber }}</td>
                 <td>{{ level_manager.profilePhoto }}</td>
                 <td>{{ level_manager.cni }}</td>
@@ -38,7 +36,7 @@
                 <td>{{ level_manager.isActive ? 'Yes' : 'No' }}</td>
                 <td>{{ level_manager.createdAt ? level_manager.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ level_manager.codeResp }}</td>
-                <td>{{ level_manager.function }}</td>
+                <td>{{ level_manager.fonction }}</td>
                 <td>{{ level_manager.department }}</td>
                 <td>
                     <a href="{{ path('app_level_manager_show', {'id': level_manager.id}) }}">show</a>

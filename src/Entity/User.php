@@ -24,7 +24,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
     "ue_manager" => "UEManager",
     "teacher" => "Teacher"
 
-
 ])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
