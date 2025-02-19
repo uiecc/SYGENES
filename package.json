@@ -24,6 +24,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@fontsource/lexend": "^5.1.2",
         "@tailwindcss/postcss": "^4.0.4",
         "postcss-loader": "^8.1.1"
     }

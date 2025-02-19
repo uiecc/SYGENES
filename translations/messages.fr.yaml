@@ -1,0 +1,51 @@
+theme:
+    light: 'Clair'
+    dark: 'Sombre'
+language:
+    english: 'Anglais'
+    french: 'Français'
+
+# Traductions de base pour la connexion
+base_login:
+    login: 'Connexion'
+    features: 'Fonctionnalités'
+    documentation: 'Documentation'
+    pricing: 'Tarification'
+    faq: 'FAQ'
+    contact: 'Contactez-nous'
+
+    footer:
+        about: 'À Propos de Nous'
+        blog: 'Blog'
+        jobs: 'Emplois'
+        press: 'Presse'
+        accessibility: 'Accessibilité'
+        partners: 'Partenaires'
+        contact: 'Nous Contacter'
+        privacy: "Politique de Confidentialité"
+        terms: "Conditions d’Utilisation"
+
+# Traductions de base pour les données vides
+base_empty:
+    title: 'Aucune donnée trouvée'
+    description: 'Aucune donnée trouvée pour les critères sélectionnés'
+    action: 'Rafraîchir'
+
+# Traductions de base pour le tableau de bord
+base_dashboard:
+    dashboard: 'Tableau de bord'
+    settings: 'Paramètres'
+    logout: 'Déconnexion'
+
+# Traductions pour la page de connexion
+login_page:
+    title: 'Connexion'
+    email: 'Email'
+    password: 'Mot de passe'
+    remember_me: 'Se souvenir de moi'
+    forgot_password: 'Mot de passe oublié ?'
+    header: 'Connectez-vous à votre compte'
+
+# Traductions pour la page du tableau de bord
+
+# Traductions pour les pages intermédiaires

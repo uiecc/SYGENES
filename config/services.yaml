@@ -1,5 +1,6 @@
 parameters:
     uploads_directory: '%kernel.project_dir%/public/uploads/profiles'
+    locale: 'en'
 
 services:
     # default configuration for services in *this* file
@@ -15,6 +16,12 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\EventSubscriber\LocaleSubscriber:
+        arguments:
+            $defaultLocale: '%locale%'
+        tags:
+            - { name: kernel.event_subscriber }
+
     # Configuration explicite du FileUploader
     App\Service\FileUploader:
         arguments:
@@ -28,6 +35,7 @@ services:
             $entityManager: '@doctrine.orm.entity_manager'
             $requestStack: '@request_stack'
             $verificationCodeService: '@App\Service\VerificationCodeService'
+
 
     # Configuration de l'écouteur de logout
     App\EventListener\LogoutListener:
