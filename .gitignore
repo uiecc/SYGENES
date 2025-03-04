@@ -1,7 +1,7 @@
 ###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
+.env.local
+.env.local.php
+.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
@@ -17,7 +17,7 @@
 .phpunit.result.cache 
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
-/.env
+.env
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 npm-debug.log

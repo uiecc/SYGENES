@@ -28,6 +28,9 @@ services:
             $entityManager: '@doctrine.orm.entity_manager'
             $requestStack: '@request_stack'
             $verificationCodeService: '@App\Service\VerificationCodeService'
+    App\EventListener\SecurityListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 9999 }
     # Configuration de l'écouteur de logout
     App\EventListener\LogoutListener:
         tags:

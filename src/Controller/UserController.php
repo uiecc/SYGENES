@@ -117,70 +117,49 @@ class UserController extends AbstractController
         if ($this->getUser() && $request->getSession()->get('is_fully_authenticated')) {
             return $this->redirectToRoute('app_home');
         }
-    
+
         // Rediriger vers la vérification si en cours
         if ($request->getSession()->get('needs_2fa_verification')) {
             return $this->redirectToRoute('app_verify_code');
         }
-    
+
         return $this->render('user/login.html.twig', [
             'last_username' => $authenticationUtils->getLastUsername(),
             'error' => $authenticationUtils->getLastAuthenticationError()
         ]);
     }
-    
+
     #[Route('/verify-code', name: 'app_verify_code', methods: ['GET', 'POST'])]
-    public function verifyCode(
-        Request $request,
-        VerificationCodeService $codeService,
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
-    ): Response {
-        // Rediriger si déjà authentifié complètement
-        if ($this->getUser() && $request->getSession()->get('is_fully_authenticated')) {
+    public function verifyCode(Request $request, VerificationCodeService $codeService): Response
+    {
+        $session = $request->getSession();
+
+        // Rediriger si déjà complètement authentifié
+        if ($session->get('is_fully_authenticated')) {
             return $this->redirectToRoute('app_home');
         }
-    
-        // Vérifier si un code est en attente de vérification
-        $pendingUserId = $request->getSession()->get('pending_user_id');
-        if (!$pendingUserId) {
+
+        // Vérifier si en attente de vérification
+        if (!$session->get('needs_2fa_verification')) {
             return $this->redirectToRoute('app_login');
         }
-    
-        $user = $entityManager->getRepository(User::class)->find($pendingUserId);
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
-    
+
         if ($request->isMethod('POST')) {
             $code = $request->request->get('verification_code');
-            
-            if ($codeService->isCodeValid($user, $code)) {
-                // Authentifier complètement l'utilisateur
-                $request->getSession()->set('is_fully_authenticated', true);
-                $request->getSession()->remove('needs_2fa_verification');
-                $request->getSession()->remove('pending_user_id');
-    
-                // Connecter manuellement l'utilisateur
-                $token = new UsernamePasswordToken(
-                    $user,
-                    'main',
-                    $user->getRoles()
-                );
-                $this->container->get('security.token_storage')->setToken($token);
-                $request->getSession()->set('_security_main', serialize($token));
-    
+
+            if ($codeService->isCodeValid($this->getUser(), $code)) {
+                $session->set('is_fully_authenticated', true);
+                $session->remove('needs_2fa_verification');
+                $session->remove('pending_user_id');
+
                 return $this->redirectToRoute('app_home');
             }
-            
+
             $this->addFlash('error', 'Code invalide ou expiré');
         }
-    
-        return $this->render('user/verify_code.html.twig', [
-            'user' => $user
-        ]);
+
+        return $this->render('user/verify_code.html.twig');
     }
-    
     #[Route('/resend-code', name: 'app_resend_code')]
     public function resendCode(Request $request, VerificationCodeService $codeService): Response
     {
