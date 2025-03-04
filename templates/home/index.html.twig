@@ -44,8 +44,92 @@
 	{# Feature Section #}
 	<section id="features" class="py-20 bg-gray-50 dark:bg-gray-900">
 		<div class="max-w-7xl mx-auto px-4">
-			<h2 class="text-3xl font-bold text-center mb-16">{{ 'home_page.features.title'|trans }}</h2>
-			{# Feature content placeholder #}
+			<h2 class="text-3xl font-bold text-center mb-4">{{ 'home_page.features.title'|trans }}</h2>
+			<p class="text-center text-gray-600 dark:text-gray-300 mb-16 max-w-2xl mx-auto">Streamline grade management with our intuitive platform designed for modern educational institutions.</p>
+
+			<div
+				class="grid grid-cols-3 gap-8">
+				{# Column 1 #}
+				<div class="flex items-center">
+					<div class="rounded-2xl border border-black/6 p-6 bg-white dark:bg-gray-800">
+						<div class="flex items-center mb-4">
+							<div class="p-2 bg-custom-orange rounded-full border-2 border-white">
+								<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl font-semibold mb-2">Optimised Processes</h3>
+						<p class="text-gray-600 dark:text-gray-300">Automate grade calculations and reporting workflows to save time and reduce errors.</p>
+					</div>
+				</div>
+
+				{# Column 2 #}
+				<div class="space-y-8">
+					<div class="rounded-2xl border border-black/6 p-6 bg-white dark:bg-gray-800">
+						<div class="flex items-center mb-4">
+							<div class="p-2 bg-custom-orange rounded-full border-2 border-white">
+								<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl font-semibold mb-2">Quick Certificates</h3>
+						<p class="text-gray-600 dark:text-gray-300">Generate and distribute student certificates with just a few clicks.</p>
+					</div>
+
+					<div class="rounded-2xl border border-black/6 p-6 bg-white dark:bg-gray-800">
+						<div class="flex items-center mb-4">
+							<div class="p-2 bg-custom-orange rounded-full border-2 border-white">
+								<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl font-semibold mb-2">Sleek and Responsive Design</h3>
+						<p class="text-gray-600 dark:text-gray-300">Access the platform seamlessly across all devices with our modern interface.</p>
+					</div>
+
+					<div class="rounded-2xl border border-black/6 p-6 bg-white dark:bg-gray-800">
+						<div class="flex items-center mb-4">
+							<div class="p-2 bg-custom-orange rounded-full border-2 border-white">
+								<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl font-semibold mb-2">Extensively Modular</h3>
+						<p class="text-gray-600 dark:text-gray-300">Customize the system to match your institution's specific grading requirements.</p>
+					</div>
+				</div>
+
+				{# Column 3 #}
+				<div class="space-y-8 mt-32">
+					<div class="rounded-2xl border border-black/6 p-6 bg-white dark:bg-gray-800">
+						<div class="flex items-center mb-4">
+							<div class="p-2 bg-custom-orange rounded-full border-2 border-white">
+								<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl font-semibold mb-2">Available Online and Offline</h3>
+						<p class="text-gray-600 dark:text-gray-300">Continue working seamlessly with offline capability and automatic synchronization.</p>
+					</div>
+
+					<div class="rounded-2xl border border-black/6 p-6 bg-white dark:bg-gray-800">
+						<div class="flex items-center mb-4">
+							<div class="p-2 bg-custom-orange rounded-full border-2 border-white">
+								<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+								</svg>
+							</div>
+						</div>
+						<h3 class="text-xl font-semibold mb-2">Exceptionally Robust</h3>
+						<p class="text-gray-600 dark:text-gray-300">Built with enterprise-grade security and reliability for your critical academic data.</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</section>
 
