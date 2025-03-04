@@ -14,7 +14,7 @@ git reset --hard origin/main  # Remplacez 'main' par votre branche principale
 echo "📦 Mise à jour des dépendances..."
 php composer.phar install --no-interaction --no-progress --prefer-dist
 
-echo "🔄 Mise à jour du schéma de la base de données..."
+echo "🔄 Mise à jour du schéma de la base de données...."
 php bin/console doctrine:schema:update --force --no-interaction
 
 echo "🛠️ Reconstruction des assets..."
