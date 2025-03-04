@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
@@ -43,26 +42,28 @@ class TwoFactorAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        try {
-            // Récupérer l'utilisateur
-            $user = $token->getUser();
-            
-            // Générer et envoyer le code de vérification
-            $verificationCode = $this->verificationCodeService->generateCode($user);
-            
-            // Debug - ajoutez ces lignes temporairement
-            dump("Code généré : " . $verificationCode->getCode());
-            dump("Pour l'utilisateur : " . $user->getEmail());
-    
-            // Marquer que l'utilisateur a besoin de vérification
-            $request->getSession()->set('needs_2fa_verification', true);
-    
-            return new RedirectResponse($this->router->generate('app_verify_code'));
-        } catch (\Exception $e) {
-            // Debug - log l'erreur
-            dump("Erreur lors de l'envoi du code : " . $e->getMessage());
-            throw $e;
+        $session = $request->getSession();
+        
+        // Si l'authentification est déjà complète
+        if ($session->get('is_fully_authenticated')) {
+            if ($targetPath = $this->getTargetPath($session, $firewallName)) {
+                return new RedirectResponse($targetPath);
+            }
+            return new RedirectResponse($this->router->generate('app_home'));
         }
+    
+        // Générer et envoyer le code
+        $this->verificationCodeService->generateCode($token->getUser());
+        
+        // Marquer que la vérification est nécessaire
+        $session->set('needs_2fa_verification', true);
+        $session->remove('is_fully_authenticated');
+        
+        // Garder l'ID de l'utilisateur pour la vérification
+        $session->set('pending_user_id', $token->getUser()->getId());
+    
+        // Rediriger vers la vérification
+        return new RedirectResponse($this->router->generate('app_verify_code'));
     }
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
