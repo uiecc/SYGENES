@@ -1,4 +1,170 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+
+{% block title %}<title>Create UE Manager</title>{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-x-hidden">
+  <div class="max-w-6xl w-full space-y-8 bg-white rounded-xl shadow-lg overflow-hidden p-6 sm:p-8 relative">
+    <div class="flex flex-col md:flex-row">
+      <!-- Left side - Image -->
+      <div class="w-full md:w-1/2 mb-8 md:mb-0">
+        <div class="relative p-4 md:p-8 flex items-center justify-center">
+          <img src="{{ asset('images/illustrations/manager.svg') }}" alt="UE Manager Creation" class="max-w-full h-auto max-h-80">
+        </div>
+      </div>
+      
+      <!-- Right side - form -->
+      <div class="w-full md:w-1/2 md:pl-6 lg:pl-12">
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+          <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Create UE Manager</h2>
+          <p class="text-gray-600 mb-6">Fill in the details to create a new UE manager</p>
+          
+          {{ form_start(form, {'attr': {'class': 'space-y-5'}}) }}
+            <div class="space-y-4">
+              <!-- Personal Information -->
+              <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-4">
+                <h3 class="font-medium text-gray-800">Personal Information</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="form-group">
+                    <label for="{{ form.firstName.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                    {{ form_widget(form.firstName, {
+                      'attr': {
+                        'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
+                        'placeholder': 'First name'
+                      }
+                    }) }}
+                    {{ form_errors(form.firstName, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="{{ form.lastName.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                    {{ form_widget(form.lastName, {
+                      'attr': {
+                        'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
+                        'placeholder': 'Last name'
+                      }
+                    }) }}
+                    {{ form_errors(form.lastName, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                  </div>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="form-group">
+                    <label for="{{ form.function.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">Function</label>
+                    {{ form_widget(form.function, {
+                      'attr': {
+                        'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
+                        'placeholder': 'Job function'
+                      }
+                    }) }}
+                    {{ form_errors(form.function, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="{{ form.department.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                    {{ form_widget(form.department, {
+                      'attr': {
+                        'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
+                        'placeholder': 'Department'
+                      }
+                    }) }}
+                    {{ form_errors(form.department, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="{{ form.codeResp.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">Responsibility Code</label>
+                  {{ form_widget(form.codeResp, {
+                    'attr': {
+                      'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
+                      'placeholder': 'Responsibility code'
+                    }
+                  }) }}
+                  {{ form_errors(form.codeResp, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+              </div>
+              
+              <!-- Account Information -->
+              <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-4">
+                <h3 class="font-medium text-gray-800">Account Information</h3>
+                
+                <div class="form-group">
+                  <label for="{{ form.username.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                  {{ form_widget(form.username, {
+                    'attr': {
+                      'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
+                      'placeholder': 'Username'
+                    }
+                  }) }}
+                  {{ form_errors(form.username, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="form-group">
+                  <label for="{{ form.email.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  {{ form_widget(form.email, {
+                    'attr': {
+                      'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
+                      'placeholder': 'Email address'
+                    }
+                  }) }}
+                  {{ form_errors(form.email, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="form-group">
+                  <label for="{{ form.password.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                  {{ form_widget(form.password, {
+                    'attr': {
+                      'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
+                      'placeholder': 'Password'
+                    }
+                  }) }}
+                  {{ form_errors(form.password, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+              </div>
+              
+              <!-- UE Assignment -->
+              <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-4">
+                <h3 class="font-medium text-gray-800">Teaching Unit Assignment</h3>
+                
+                <div class="form-group">
+                  <label for="{{ form.ue.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">Teaching Unit (UE)</label>
+                  {{ form_widget(form.ue, {
+                    'attr': {
+                      'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out'
+                    }
+                  }) }}
+                  {{ form_errors(form.ue, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                  <p class="text-xs text-gray-500 mt-2">Only unassigned teaching units are displayed</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-between gap-4 mt-8">
+              <a href="{{ path('app_ue_manager_index') }}" class="order-2 sm:order-1 w-full sm:w-auto flex items-center justify-center px-4 py-2 border border-gray-300 rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-sm">
+                <svg class="mr-2 -ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to list
+              </a>
+              
+              <button type="submit" class="order-1 sm:order-2 w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-orange transition-all duration-200 ease-in-out shadow-md hover:shadow-lg">
+                {{ button_label|default('Save') }}
+                <svg class="ml-2 -mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </button>
+            </div>
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Orange dots pattern -->
+  <div class="absolute bottom-0 left-0 md:left-32 hidden md:grid grid-cols-6 gap-2 p-4">
+    {% for i in 1..36 %}
+      <div class="h-2 w-2 rounded-full bg-custom-orange"></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

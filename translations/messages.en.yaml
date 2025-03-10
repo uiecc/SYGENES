@@ -14,6 +14,7 @@ base_login:
     faq: 'FAQ'
     documentation: 'Documentation'
     blog: 'Blog'
+    title: 'Welcome'
 
     footer:
         about: 'About Us'
@@ -50,6 +51,27 @@ login_page:
     forgot_password: 'Forgot Password?'
     header: 'Login to your account'
   
+
+# Home Page Translations
+home_page:
+    title: 'Home'
+    heading_part_1: "Systeme de Gestion des "
+    heading_part_2: "Notes"
+    heading_part_3: "de l'ESIGN"
+    description: "Votre système de gestion des notes tout-en-un, conçu par l'École Superieure Internationale du Genie Numérique."
+    cta: "Commencer Maintenant"
+
+    features:
+        title: "Features"
+    
+    pricing:
+        title: "Pricing"
+    
+    faq:
+        title: "Frequently asked questions"
+    
+    contact:
+        title: "Contact Us"
 
 # Dashboard Page Translations
 

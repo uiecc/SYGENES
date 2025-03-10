@@ -10,9 +10,10 @@ base_login:
     login: 'Connexion'
     features: 'Fonctionnalités'
     documentation: 'Documentation'
-    pricing: 'Tarification'
+    pricing: 'Tarifs'
     faq: 'FAQ'
     contact: 'Contactez-nous'
+    title: 'Bienvenue'
 
     footer:
         about: 'À Propos de Nous'

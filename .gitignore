@@ -1,6 +1,9 @@
 # Ignorer les fichiers d'environnement
 /.env
 /.env.local
+/.env.dev
+/.env
+/.env.test
 /.env.local.php
 /.env.*.local
 
@@ -17,11 +20,68 @@
 # Ignorer les fichiers liés à PHPUnit
 /phpunit.xml
 .phpunit.result.cache
+###< phpunit/phpunit ###
 
-# Ignorer les fichiers liés à Webpack Encore
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache 
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> symfony/webpack-encore-bundle ###
 /node_modules/
 npm-debug.log
 yarn-error.log
+###< symfony/webpack-encore-bundle ###
 
-# Ignorer les fichiers générés par Symfony Asset Mapper
+###> symfony/asset-mapper ###
+/public/assets/
+/public/build/
 /assets/vendor/
+###< symfony/asset-mapper ###
+
+###> IDE Specific Files ###
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.buildpath
+.settings/
+
+###> Operating System Files ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+###> Deployment and Backup ###
+*.bak
+*.swp
+*.swo
+*~
+
+###> Composer ###
+/composer.phar
+/composer.lock
+
+###> Frontend Build Tools ###
+/public/build/
+/public/assets/
+/node_modules/
+/assets/vendor/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+###> Logs and Caches ###
+/var/cache/*
+/var/log/*
+*.log
+
+###> Security ###
+*.pem
+*.key
+*.crt

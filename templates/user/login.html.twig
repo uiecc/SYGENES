@@ -1,55 +1,81 @@
 {# templates/user/login.html.twig #}
 {% extends 'base_empty.html.twig' %}
 
-{% block title %}Connexion{% endblock %}
+{% block title %}
+	{{ 'login_page.title'|trans }}
+{% endblock %}
 
 {% block body %}
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="max-w-md w-full space-y-8">
-        <div class="debug-info" style="display: none;">
-    Current Locale: {{ app.request.locale }}
-    Features Translation: {{ 'base_login.features'|trans }}
-    Documentation Translation: {{ 'base_login.documentation'|trans }}
-    Pricing Translation: {{ 'base_login.pricing'|trans }}
-</div>
-            <div>
-            
-                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    {{ 'login_page.header'| trans }}
-                </h2>
-            </div>
-            <form class="mt-8 space-y-6" action="{{ path('app_login') }}" method="post">
-                {% if error %}
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                        {{ error.messageKey|trans(error.messageData, 'security') }}
-                    </div>
-                {% endif %}
+	<div class="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+		<div class="max-w-5xl w-full space-y-8 bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
+			<div
+				class="flex flex-col md:flex-row">
+				<!-- Left side - form -->
+				<div class="w-full md:w-1/2 p-6 md:p-12">
+					<div class="max-w-md mx-auto">
+						<h2 class="text-4xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">Welcome back!</h2>
+						<p class="text-gray-600 dark:text-gray-300 mb-6 md:mb-8">
+							Please sign in to continue
+						</p>
 
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                
-                <div class="rounded-md shadow-sm -space-y-px">
-                    <div>
-                        <label for="username" class="sr-only">Email/Username</label>
-                        <input id="username" name="_username" type="text" required 
-                               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
-                               placeholder="Email ou nom d'utilisateur"
-                               value="{{ last_username }}">
-                    </div>
-                    <div>
-                        <label for="password" class="sr-only">Mot de passe</label>
-                        <input id="password" name="_password" type="password" required 
-                               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
-                               placeholder="Mot de passe">
-                    </div>
-                </div>
+						<form class="space-y-5" action="{{ path('app_login') }}" method="post">
+							{% if error %}
+								<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md" role="alert">
+									{{ error.messageKey|trans(error.messageData, 'security') }}
+								</div>
+							{% endif %}
 
-                <div>
-                    <button type="submit" 
-                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Se connecter
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+							<div class="space-y-4">
+								<div>
+									<label for="sign_in_as" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sign in as</label>
+									<input id="sign_in_as" name="_sign_in_as" type="text" required class="appearance-none relative block w-full px-3 py-2 md:py-3 border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 placeholder-gray-500 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-custom-orange focus:border-custom-orange sm:text-sm">
+								</div>
+
+								<div>
+									<label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+									<input id="username" name="_username" type="email" required class="appearance-none relative block w-full px-3 py-2 md:py-3 border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 placeholder-gray-500 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-custom-orange focus:border-custom-orange sm:text-sm" value="{{ last_username }}">
+								</div>
+
+								<div>
+									<label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+									<input id="password" name="_password" type="password" required class="appearance-none relative block w-full px-3 py-2 md:py-3 border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 placeholder-gray-500 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-custom-orange focus:border-custom-orange sm:text-sm">
+								</div>
+							</div>
+
+							<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mt-4">
+								<div class="flex items-center">
+									<input id="remember_me" name="_remember_me" type="checkbox" class="h-4 w-4 text-custom-orange focus:ring-custom-orange border-gray-300 rounded">
+									<label for="remember_me" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+										Remember me
+									</label>
+								</div>
+
+								<div class="text-sm">
+									<a href="#" class="text-custom-orange hover:underline">
+										Forgot password?
+									</a>
+								</div>
+							</div>
+
+							<div class="flex justify-center sm:justify-end mt-6">
+								<button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2 md:px-8 md:py-3 border border-transparent text-base font-medium rounded-full text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-orange">
+									Next
+									<svg class="ml-2 -mr-1 w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+									</svg>
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<!-- Right side - image - hidden on mobile -->
+				<div class="hidden md:block md:w-1/2 p-8 flex items-center justify-center relative">
+					<img src="/images/illustrations/login.svg" alt="Login Illustration" class="max-w-full h-auto"/>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
