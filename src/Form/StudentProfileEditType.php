@@ -9,11 +9,13 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\File;
 
 class StudentProfileEditType extends AbstractType
 {
@@ -97,6 +99,26 @@ class StudentProfileEditType extends AbstractType
                     'attr' => ['class' => 'form-control']
                 ],
                 'invalid_message' => 'Les deux mots de passe doivent être identiques'
+            ])
+            ->add('profilePhotoFile', FileType::class, [
+                'label' => 'Photo de profil',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG)',
+                    ])
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                    'accept' => 'image/jpeg, image/png'
+                ],
+                'help' => 'JPG ou PNG, 1 Mo maximum',
             ])
         ;
     }

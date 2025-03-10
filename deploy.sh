@@ -15,6 +15,10 @@ echo "📦 Mise à jour des dépendances..."
 php composer.phar install --no-interaction --no-progress --prefer-dist
 
 
+
+echo "🔄 Mise à jour du schéma de la base de données..."
+php bin/console doctrine:schema:update --force --no-interaction
+
 echo "🛠️ Reconstruction des assets avec mode verbose..."
 php bin/console tailwind:build --minify
 php bin/console assets:install 
@@ -25,8 +29,5 @@ if [ $? -ne 0 ]; then
     echo "❌ Erreur lors de la construction de Tailwind CSS"
     exit 1
 fi
-
-echo "🔄 Mise à jour du schéma de la base de données..."
-php bin/console doctrine:schema:update --force --no-interaction
 
 echo "✅ Déploiement terminé"

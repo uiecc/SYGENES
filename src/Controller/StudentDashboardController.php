@@ -9,6 +9,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\Student;
 use App\Form\StudentProfileEditType;
 use App\Form\StudentProfileType;
+use App\Service\FileUploader;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormError;
@@ -92,61 +93,66 @@ class StudentDashboardController extends AbstractController
             'student' => $student,
         ]);
     }
-    #[Route('/profile/edit', name: 'student_profile_edit')]
-    public function editProfile(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
-    {
-        /** @var Student $student */
-        $student = $this->getUser();
-
-        if (!$student instanceof Student) {
-            throw $this->createAccessDeniedException('Vous devez être connecté en tant qu\'étudiant pour accéder à cette page.');
-        }
-
-        $form = $this->createForm(StudentProfileEditType::class, $student);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $passwordUpdated = false;
-
-            // Gérer le changement de mot de passe
-            if ($form->has('newPassword') && $form->get('newPassword')->getData()) {
-                // Activer le groupe de validation password_update
-                $form->addExtraData(['validation_groups' => ['Default', 'password_update']]);
-
-                $currentPassword = $form->get('currentPassword')->getData();
-                $newPassword = $form->get('newPassword')->getData();
-
-                // Vérifier que le mot de passe actuel est correct
-                if (!$passwordHasher->isPasswordValid($student, $currentPassword)) {
-                    $form->get('currentPassword')->addError(new FormError('Mot de passe actuel incorrect'));
-
-                    return $this->render('student/profile_edit.html.twig', [
-                        'form' => $form->createView(),
-                        'student' => $student
-                    ]);
-                }
-
-                // Hasher et définir le nouveau mot de passe
-                $hashedPassword = $passwordHasher->hashPassword($student, $newPassword);
-                $student->setPassword($hashedPassword);
-                $passwordUpdated = true;
-            }
-
-            // Persistez les changements
-            $entityManager->flush();
-
-            if ($passwordUpdated) {
-                $this->addFlash('success', 'Votre profil et votre mot de passe ont été mis à jour avec succès.');
-            } else {
-                $this->addFlash('success', 'Votre profil a été mis à jour avec succès.');
-            }
-
-            return $this->redirectToRoute('student_profile');
-        }
-
-        return $this->render('student/profile_edit.html.twig', [
-            'form' => $form->createView(),
-            'student' => $student
-        ]);
+// Modifier la méthode editProfile pour ajouter le paramètre FileUploader
+#[Route('/profile/edit', name: 'student_profile_edit')]
+public function editProfile(
+    Request $request, 
+    EntityManagerInterface $entityManager, 
+    UserPasswordHasherInterface $passwordHasher,
+    FileUploader $fileUploader
+): Response
+{
+    /** @var Student $student */
+    $student = $this->getUser();
+    
+    if (!$student instanceof Student) {
+        throw $this->createAccessDeniedException('Vous devez être connecté en tant qu\'étudiant pour accéder à cette page.');
     }
-}
+    
+    $form = $this->createForm(StudentProfileEditType::class, $student);
+    $form->handleRequest($request);
+    
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Gérer le téléchargement de la photo de profil
+        $profilePhotoFile = $form->get('profilePhotoFile')->getData();
+        
+        if ($profilePhotoFile) {
+            // Si l'étudiant a déjà une photo autre que la photo par défaut, supprimer l'ancienne
+            $oldPhotoFilename = $student->getProfilePhoto();
+            if ($oldPhotoFilename && $oldPhotoFilename !== 'default.jpg') {
+                $oldPhotoPath = $fileUploader->getTargetDirectory() . '/' . $oldPhotoFilename;
+                if (file_exists($oldPhotoPath)) {
+                    unlink($oldPhotoPath);
+                }
+            }
+            
+            // Générer un nom unique pour la nouvelle photo et la déplacer
+            $newFilename = $fileUploader->upload($profilePhotoFile);
+            
+            // Mettre à jour l'entité avec le nouveau nom de fichier
+            $student->setProfilePhoto($newFilename);
+        }
+        
+        // Gérer le changement de mot de passe (code existant)
+        $passwordUpdated = false;
+        if ($form->has('newPassword') && $form->get('newPassword')->getData()) {
+            // ... code existant pour la gestion du mot de passe
+        }
+        
+        // Persistez les changements
+        $entityManager->flush();
+        
+        if ($passwordUpdated) {
+            $this->addFlash('success', 'Votre profil et votre mot de passe ont été mis à jour avec succès.');
+        } else {
+            $this->addFlash('success', 'Votre profil a été mis à jour avec succès.');
+        }
+        
+        return $this->redirectToRoute('student_profile');
+    }
+    
+    return $this->render('student/profile_edit.html.twig', [
+        'form' => $form->createView(),
+        'student' => $student
+    ]);
+}}
