@@ -115,6 +115,12 @@ class UserController extends AbstractController
     {
         // Rediriger si déjà authentifié complètement
         if ($this->getUser() && $request->getSession()->get('is_fully_authenticated')) {
+            // Si l'utilisateur est un étudiant, le rediriger vers le dashboard étudiant
+            if ($this->getUser() instanceof Student) {
+                return $this->redirectToRoute('student_dashboard');
+            }
+            
+            // Pour les autres utilisateurs, rediriger vers la page d'accueil
             return $this->redirectToRoute('app_home');
         }
 
@@ -133,31 +139,43 @@ class UserController extends AbstractController
     public function verifyCode(Request $request, VerificationCodeService $codeService): Response
     {
         $session = $request->getSession();
-
+    
         // Rediriger si déjà complètement authentifié
         if ($session->get('is_fully_authenticated')) {
+            // Si l'utilisateur est un étudiant, le rediriger vers le dashboard étudiant
+            if ($this->getUser() instanceof Student) {
+                return $this->redirectToRoute('student_dashboard');
+            }
+            
+            // Pour les autres utilisateurs, rediriger vers la page d'accueil
             return $this->redirectToRoute('app_home');
         }
-
+    
         // Vérifier si en attente de vérification
         if (!$session->get('needs_2fa_verification')) {
             return $this->redirectToRoute('app_login');
         }
-
+    
         if ($request->isMethod('POST')) {
             $code = $request->request->get('verification_code');
-
+    
             if ($codeService->isCodeValid($this->getUser(), $code)) {
                 $session->set('is_fully_authenticated', true);
                 $session->remove('needs_2fa_verification');
                 $session->remove('pending_user_id');
-
+    
+                // Si l'utilisateur est un étudiant, le rediriger vers le dashboard étudiant
+                if ($this->getUser() instanceof Student) {
+                    return $this->redirectToRoute('student_dashboard');
+                }
+                
+                // Pour les autres utilisateurs, rediriger vers la page d'accueil
                 return $this->redirectToRoute('app_home');
             }
-
+    
             $this->addFlash('error', 'Code invalide ou expiré');
         }
-
+    
         return $this->render('user/verify_code.html.twig');
     }
     #[Route('/resend-code', name: 'app_resend_code')]
@@ -174,6 +192,7 @@ class UserController extends AbstractController
 
         return $this->redirectToRoute('app_verify_code');
     }
+
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
@@ -188,6 +207,11 @@ class UserController extends AbstractController
         $user = $this->getUser();
         if (!$user) {
             throw $this->createAccessDeniedException();
+        }
+
+        // Si l'utilisateur est un étudiant, le rediriger vers le profil étudiant
+        if ($user instanceof Student) {
+            return $this->redirectToRoute('student_profile');
         }
 
         return $this->render('user/show.html.twig', [
@@ -207,6 +231,11 @@ class UserController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        // Si l'utilisateur est un étudiant, le rediriger vers l'édition du profil étudiant
+        if ($user instanceof Student) {
+            return $this->redirectToRoute('student_profile_edit');
+        }
+
         $form = $this->createForm(UserProfileType::class, $user);
         $form->handleRequest($request);
 
@@ -216,7 +245,7 @@ class UserController extends AbstractController
                 // Vérifier l'ancien mot de passe
                 if (!$passwordHasher->isPasswordValid($user, $form->get('currentPassword')->getData())) {
                     $form->get('currentPassword')->addError(new FormError('Mot de passe actuel incorrect'));
-                    return $this->render('profile/edit.html.twig', [
+                    return $this->render('user/edit.html.twig', [
                         'form' => $form->createView()
                     ]);
                 }

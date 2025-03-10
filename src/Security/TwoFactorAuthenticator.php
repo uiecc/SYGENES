@@ -2,6 +2,7 @@
 // src/Security/TwoFactorAuthenticator.php
 namespace App\Security;
 
+use App\Entity\Student;
 use App\Service\VerificationCodeService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,9 +44,16 @@ class TwoFactorAuthenticator extends AbstractLoginFormAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $session = $request->getSession();
+        $user = $token->getUser();
         
         // Si l'authentification est déjà complète
         if ($session->get('is_fully_authenticated')) {
+            // Si l'utilisateur est un étudiant, rediriger vers le tableau de bord étudiant
+            if ($user instanceof Student) {
+                return new RedirectResponse($this->router->generate('student_dashboard'));
+            }
+            
+            // Sinon, rediriger vers la page d'accueil ou le chemin cible
             if ($targetPath = $this->getTargetPath($session, $firewallName)) {
                 return new RedirectResponse($targetPath);
             }
@@ -53,18 +61,19 @@ class TwoFactorAuthenticator extends AbstractLoginFormAuthenticator
         }
     
         // Générer et envoyer le code
-        $this->verificationCodeService->generateCode($token->getUser());
+        $this->verificationCodeService->generateCode($user);
         
         // Marquer que la vérification est nécessaire
         $session->set('needs_2fa_verification', true);
         $session->remove('is_fully_authenticated');
         
         // Garder l'ID de l'utilisateur pour la vérification
-        $session->set('pending_user_id', $token->getUser()->getId());
+        $session->set('pending_user_id', $user->getId());
     
         // Rediriger vers la vérification
         return new RedirectResponse($this->router->generate('app_verify_code'));
     }
+    
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         if ($request->hasSession()) {

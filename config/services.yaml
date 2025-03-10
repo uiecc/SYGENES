@@ -48,3 +48,6 @@ services:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
             $passwordHasher: '@security.password_hasher'
+            $logger: '@logger'
+            $validator: '@validator'
+            $doctrine: '@doctrine'
