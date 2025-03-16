@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PV - {{ field.name }} - {{ level.name }} - {{ semester.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 10px;
+        }
+        .school-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .document-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
+        .document-subtitle {
+            font-size: 14px;
+            font-style: italic;
+            margin: 5px 0;
+        }
+        .info-table {
+            width: 100%;
+            margin-bottom: 15px;
+            border-collapse: collapse;
+        }
+        .info-table td {
+            padding: 4px;
+        }
+        .info-table .label {
+            font-weight: bold;
+            width: 150px;
+        }
+        .notes-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 9px;
+        }
+        .notes-table th, .notes-table td {
+            border: 1px solid #333;
+            padding: 4px;
+            text-align: center;
+        }
+        .notes-table th {
+            background-color: #f2f2f2;
+        }
+        .ec-header {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            text-align: left;
+            padding: 6px;
+            font-size: 12px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            border-left: 4px solid #333;
+        }
+        .ue-section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        .ue-title {
+            background-color: #333;
+            color: white;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px;
+            font-size: 14px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .student-name {
+            text-align: left;
+            padding-left: 5px;
+        }
+        .footer {
+            margin-top: 30px;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+            text-align: center;
+            font-size: 10px;
+        }
+        .signature-block {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature {
+            width: 30%;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+            text-align: center;
+            margin: 0 10px;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        .total-column {
+            background-color: #f9f9f9;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="school-name">{{ school.name|upper }}</div>
+        <div>{{ school.university.name }}</div>
+        <div class="document-title">Procès-Verbal de Notes</div>
+        <div class="document-subtitle">Notes de Contrôle Continu (CC) et Travaux Pratiques (TP)</div>
+    </div>
+    
+    <table class="info-table">
+        <tr>
+            <td class="label">Filière:</td>
+            <td>{{ field.code }} - {{ field.name }}</td>
+            <td class="label">Niveau:</td>
+            <td>{{ level.code }} - {{ level.name }}</td>
+        </tr>
+        <tr>
+            <td class="label">Semestre:</td>
+            <td>{{ semester.code }} - {{ semester.name }}</td>
+            <td class="label">Année Académique:</td>
+            <td>{{ academicYear }}</td>
+        </tr>
+        <tr>
+            <td class="label">Date d'édition:</td>
+            <td>{{ date|date('d/m/Y') }}</td>
+            <td class="label">Nombre d'étudiants:</td>
+            <td>{{ students|length }}</td>
+        </tr>
+    </table>
+    
+    {% for ueData in data %}
+        {% set ue = ueData.ue %}
+        
+        <div class="ue-section">
+            <div class="ue-title">
+                UE: {{ ue.code }} - {{ ue.name }} ({{ ue.credit }} crédits)
+            </div>
+            
+            {% for ecData in ueData.ecs %}
+                {% set ec = ecData.ec %}
+                
+                <div class="ec-header">
+                    EC: {{ ec.code }} - {{ ec.name }} ({{ ec.credit }} crédits)
+                </div>
+                
+                <table class="notes-table">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Matricule</th>
+                            <th>Nom et Prénom</th>
+                            <th>CC/30</th>
+                            {% if ec.hasTP %}
+                                <th>TP/20</th>
+                            {% endif %}
+                            <th class="total-column">Total/{% if ec.hasTP %}50{% else %}30{% endif %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ student.matricule }}</td>
+                                <td class="student-name">{{ student.lastName }} {{ student.firstName }}</td>
+                                
+                                {% set note = ecData.notes[student.id] %}
+                                
+                                <td>{{ note and note.ccNote ? note.ccNote|number_format(2) : '-' }}</td>
+                                
+                                {% if ec.hasTP %}
+                                    <td>{{ note and note.tpNote ? note.tpNote|number_format(2) : '-' }}</td>
+                                {% endif %}
+                                
+                                <td class="total-column">{{ note and note.getTotalNote ? note.getTotalNote|number_format(2) : '-' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+            
+            <!-- Tableau récapitulatif pour l'UE -->
+            <div class="ec-header" style="background-color: #d0d0d0; margin-top: 20px;">
+                Récapitulatif des moyennes pour l'UE
+            </div>
+            
+            <table class="notes-table">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Matricule</th>
+                        <th>Nom et Prénom</th>
+                        {% for ecData in ueData.ecs %}
+                            {% set ec = ecData.ec %}
+                            <th>{{ ec.code }}</th>
+                        {% endfor %}
+                        <th class="total-column">Moyenne UE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ student.matricule }}</td>
+                            <td class="student-name">{{ student.lastName }} {{ student.firstName }}</td>
+                            
+                            {% set ueTotal = 0 %}
+                            {% set ecCount = 0 %}
+                            
+                            {% for ecData in ueData.ecs %}
+                                {% set ec = ecData.ec %}
+                                {% set note = ecData.notes[student.id] %}
+                                
+                                <td>{{ note and note.getTotalNote ? note.getTotalNote|number_format(2) : '-' }}</td>
+                                
+                                {% if note and note.getTotalNote %}
+                                    {% set ueTotal = ueTotal + note.getTotalNote %}
+                                    {% set ecCount = ecCount + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            
+                            <td class="total-column">
+                                {% if ecCount > 0 %}
+                                    <strong>{{ (ueTotal / ecCount)|number_format(2) }}</strong>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if not loop.last %}
+            <div class="page-break"></div>
+        {% endif %}
+    {% endfor %}
+    
+    <div class="signature-block">
+        <div class="signature">
+            <p>Responsable de la Filière</p>
+            {% if field.fieldManager %}
+                <p>{{ field.fieldManager.firstName }} {{ field.fieldManager.lastName }}</p>
+            {% else %}
+                <p>___________________________</p>
+            {% endif %}
+        </div>
+        
+        <div class="signature">
+            <p>Responsable du Niveau</p>
+            {% if level.levelManager %}
+                <p>{{ level.levelManager.firstName }} {{ level.levelManager.lastName }}</p>
+            {% else %}
+                <p>___________________________</p>
+            {% endif %}
+        </div>
+        
+        <div class="signature">
+            <p>Le Directeur</p>
+            {% if school.schoolManager %}
+                <p>{{ school.schoolManager.firstName }} {{ school.schoolManager.lastName }}</p>
+            {% else %}
+                <p>___________________________</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Ce document est confidentiel et ne doit être communiqué qu'aux personnes autorisées.</p>
+        <p>Notes CC sur 30 points, notes TP sur 20 points, total sur 50 points.</p>
+        <p>PV généré le {{ date|date('d/m/Y à H:i') }}</p>
+    </div>
+</body>
+</html>

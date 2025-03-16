@@ -1,11 +1,17 @@
+{# templates/ec/new.html.twig - With Tailwind #}
 {% extends 'base.html.twig' %}
 
-{% block title %}New EC{% endblock %}
+{% block title %}Créer un Élément Constitutif{% endblock %}
 
 {% block body %}
-    <h1>Create new EC</h1>
-
-    {{ include('ec/_form.html.twig') }}
-
-    <a href="{{ path('app_e_c_index') }}">back to list</a>
+<div class="py-8 px-4 mx-auto max-w-4xl">
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-green-600 to-green-500 px-6 py-4 border-b">
+            <h1 class="text-xl font-semibold text-white">Créer un Élément Constitutif</h1>
+        </div>
+        <div class="p-6">
+            {{ include('ec/_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}

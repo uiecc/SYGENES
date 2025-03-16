@@ -1,0 +1,68 @@
+{# templates/note/pv_index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Génération des PV de notes{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Génération des procès-verbaux de notes</h1>
+    
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ message }}
+        </div>
+    {% endfor %}
+    
+    {% if data|length > 0 %}
+        {% for fieldData in data %}
+            {% set field = fieldData.field %}
+            
+            <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+                <div class="bg-gray-800 text-white px-6 py-4">
+                    <h2 class="font-semibold text-lg">{{ field.code }} - {{ field.name }}</h2>
+                </div>
+                
+                <div class="p-6">
+                    {% for levelData in fieldData.levels %}
+                        {% set level = levelData.level %}
+                        
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold mb-3 border-b pb-2">{{ level.code }} - {{ level.name }}</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {% for semester in levelData.semesters %}
+                                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-medium mb-3">{{ semester.code }} - {{ semester.name }}</h4>
+                                        
+                                        <div class="flex justify-between items-center">
+                                            <a href="{{ path('app_note_generate_pv', {
+                                                'field': field.id,
+                                                'level': level.id,
+                                                'semester': semester.id
+                                            }) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" target="_blank">
+                                                Générer PV
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="p-6 text-center text-gray-500">
+                Aucune filière n'est accessible pour votre compte.
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ path('app_note_index') }}" class="text-indigo-600 hover:text-indigo-900">
+            Retour à la liste des notes
+        </a>
+    </div>
+</div>
+{% endblock %}

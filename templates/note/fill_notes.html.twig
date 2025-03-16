@@ -1,0 +1,128 @@
+{# templates/note/fill_notes.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Saisie des notes - {{ semester.code }} - {{ level.name }}{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-2">Saisie des notes</h1>
+    <h2 class="text-lg text-gray-600 mb-6">{{ semester.code }} - {{ semester.name }} ({{ level.name }})</h2>
+    
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ message }}
+        </div>
+    {% endfor %}
+    
+    {% if ecs|length > 0 %}
+        <div class="mb-6">
+            <label for="ec-select" class="block text-sm font-medium text-gray-700 mb-2">Sélectionner un EC</label>
+            <select id="ec-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" onchange="showEcForm(this.value)">
+                <option value="">-- Choisir un EC --</option>
+                {% for ec in ecs %}
+                    <option value="{{ ec.id }}">{{ ec.code }} - {{ ec.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        {% for ec in ecs %}
+            <div id="ec-form-{{ ec.id }}" class="ec-form hidden bg-white shadow-md rounded-lg overflow-hidden mb-6">
+                <div class="bg-gray-100 px-6 py-4 border-b">
+                    <h3 class="font-semibold text-lg">{{ ec.code }} - {{ ec.name }}</h3>
+                    <p class="text-sm text-gray-500">{{ ec.ue.code }} - {{ ec.ue.name }}</p>
+                </div>
+                
+                <div class="p-6">
+                    <form method="post" action="{{ path('app_note_save', {'ec': ec.id}) }}">
+                        <div class="mb-4">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="has_tp" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" {% if ec.hasTP %}checked{% endif %} onchange="toggleTP(this)">
+                                <span class="ml-2">Cet EC comporte des notes de TP</span>
+                            </label>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Étudiant</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note CC</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider tp-col {% if not ec.hasTP %}hidden{% endif %}">Note TP</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    {% for student in students %}
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <input type="hidden" name="student[]" value="{{ student.id }}">
+                                                {{ student.lastName }} {{ student.firstName }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <input type="number" name="cc[{{ student.id }}]" min="0" max="20" step="0.25" class="mt-1 block w-24 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" placeholder="0-20" value="{{ student.notes[ec.id].ccNote|default('') }}">
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap tp-col {% if not ec.hasTP %}hidden{% endif %}">
+                                                <input type="number" name="tp[{{ student.id }}]" min="0" max="20" step="0.25" class="mt-1 block w-24 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" placeholder="0-20" value="{{ student.notes[ec.id].tpNote|default('') }}">
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-end">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                Enregistrer les notes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="p-6 text-center text-gray-500">
+                Aucun EC disponible pour ce semestre.
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ path('app_note_choose') }}" class="text-indigo-600 hover:text-indigo-900 mr-4">
+            Choisir un autre niveau/semestre
+        </a>
+        <a href="{{ path('app_note_index') }}" class="text-indigo-600 hover:text-indigo-900">
+            Retour à la liste des notes
+        </a>
+    </div>
+</div>
+
+<script>
+    function showEcForm(ecId) {
+        // Masquer tous les formulaires d'EC
+        document.querySelectorAll('.ec-form').forEach(form => {
+            form.classList.add('hidden');
+        });
+        
+        // Afficher le formulaire sélectionné
+        if (ecId) {
+            const form = document.getElementById('ec-form-' + ecId);
+            if (form) {
+                form.classList.remove('hidden');
+            }
+        }
+    }
+    
+    function toggleTP(checkbox) {
+        const form = checkbox.closest('.ec-form');
+        const tpCols = form.querySelectorAll('.tp-col');
+        
+        tpCols.forEach(col => {
+            if (checkbox.checked) {
+                col.classList.remove('hidden');
+            } else {
+                col.classList.add('hidden');
+            }
+        });
+    }
+</script>
+{% endblock %}

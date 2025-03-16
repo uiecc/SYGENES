@@ -1,0 +1,81 @@
+{# templates/note/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des notes{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Gestion des notes</h1>
+    
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ message }}
+        </div>
+    {% endfor %}
+    
+    <div class="mb-6 flex space-x-4">
+        <a href="{{ path('app_note_choose') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            Choisir un niveau et semestre
+        </a>
+        <a href="{{ path('app_note_pv_index') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            Générer les PV
+        </a>
+    </div>
+    
+    {% if ecsBySemester|length > 0 %}
+        {% for semesterData in ecsBySemester %}
+            <div class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
+                <div class="bg-gray-100 px-6 py-4 border-b">
+                    <h2 class="font-semibold text-lg">
+                        {{ semesterData.semester.code }} - {{ semesterData.semester.name }}
+                        <span class="text-sm text-gray-500 ml-2">
+                            ({{ semesterData.semester.level.name }})
+                        </span>
+                    </h2>
+                </div>
+                
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UE</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crédits</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for ec in semesterData.ecs %}
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ ec.code }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ ec.name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ ec.ue.code }} - {{ ec.ue.name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ ec.credit }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <a href="{{ path('app_note_fill', {
+                                                'level': ec.ue.semester.level.id,
+                                                'semester': ec.ue.semester.id,
+                                                'ec': ec.id
+                                            }) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                Saisir les notes
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="p-6 text-center text-gray-500">
+                Aucun EC n'est assigné à votre compte.
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

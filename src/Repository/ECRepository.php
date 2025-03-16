@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\EC;
 use App\Entity\Level;
+use App\Entity\Semester;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -126,6 +127,39 @@ class ECRepository extends ServiceEntityRepository
             ->setParameter('compulsory', true)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+        /**
+     * Trouve tous les ECs appartenant à un semestre donné
+     */
+    public function findBySemester(Semester $semester): array
+    {
+        return $this->createQueryBuilder('ec')
+            ->join('ec.ue', 'ue')
+            ->where('ue.semester = :semester')
+            ->setParameter('semester', $semester)
+            ->orderBy('ue.code', 'ASC')
+            ->addOrderBy('ec.code', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function save(EC $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(EC $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
     /**
