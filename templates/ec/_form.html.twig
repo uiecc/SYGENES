@@ -1,4 +1,93 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{# templates/ec/_form.html.twig - Partial template with Tailwind #}
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+<div class="flex flex-wrap -mx-2 mb-4">
+    <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">
+        <div>
+            {{ form_label(form.code, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.code, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+            <p class="mt-1 text-sm text-gray-500">{{ form_help(form.code) }}</p>
+            <p class="mt-1 text-sm text-red-600">{{ form_errors(form.code) }}</p>
+        </div>
+    </div>
+    <div class="w-full md:w-2/3 px-2">
+        <div>
+            {{ form_label(form.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.name, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+            <p class="mt-1 text-sm text-gray-500">{{ form_help(form.name) }}</p>
+            <p class="mt-1 text-sm text-red-600">{{ form_errors(form.name) }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="flex flex-wrap -mx-2 mb-4">
+    <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+        <div>
+            {{ form_label(form.credit, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.credit, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+            <p class="mt-1 text-sm text-gray-500">{{ form_help(form.credit) }}</p>
+            <p class="mt-1 text-sm text-red-600">{{ form_errors(form.credit) }}</p>
+        </div>
+    </div>
+    <div class="w-full md:w-3/4 px-2">
+        <div class="flex items-center mt-6">
+            <div class="flex items-center h-5">
+                {{ form_widget(form.hasTP, {'attr': {'class': 'h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'}}) }}
+            </div>
+            <div class="ml-3 text-sm">
+                {{ form_label(form.hasTP, null, {'label_attr': {'class': 'font-medium text-gray-700'}}) }}
+                <p class="text-gray-500">{{ form_help(form.hasTP) }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.ue, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+    {{ form_widget(form.ue, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+    <p class="mt-1 text-sm text-gray-500">{{ form_help(form.ue) }}</p>
+    <p class="mt-1 text-sm text-red-600">{{ form_errors(form.ue) }}</p>
+</div>
+
+<div class="mb-4">
+    {{ form_label(form.teacher, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+    {{ form_widget(form.teacher, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+    <p class="mt-1 text-sm text-gray-500">{{ form_help(form.teacher) }}</p>
+    <p class="mt-1 text-sm text-red-600">{{ form_errors(form.teacher) }}</p>
+</div>
+
+{# Champs cachés #}
+{{ form_rest(form) }}
+
+<div class="flex justify-between mt-6">
+    <a href="{{ path('app_ec_index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Retour à la liste
+    </a>
+    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+        </svg>
+        {{ ec.id ? 'Mettre à jour' : 'Créer' }}
+    </button>
+</div>
+
 {{ form_end(form) }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Activer la validation côté client
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+</script>

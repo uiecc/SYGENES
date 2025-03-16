@@ -42,10 +42,17 @@ class Student extends User
     #[ORM\OneToMany(mappedBy: 'student', targetEntity: StudentUE::class, orphanRemoval: true)]
     private Collection $studentUEs;
 
+    /**
+     * @var Collection<int, Note>
+     */
+    #[ORM\OneToMany(targetEntity: Note::class, mappedBy: 'student')]
+    private Collection $notes;
+
     public function __construct()
     {
         parent::__construct();
         $this->studentUEs = new ArrayCollection();
+        $this->notes = new ArrayCollection();
     }
 
     public function getSex(): ?string
@@ -186,6 +193,36 @@ class Student extends User
         }
         
         return false;
+    }
+
+    /**
+     * @return Collection<int, Note>
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Note $note): static
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes->add($note);
+            $note->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNote(Note $note): static
+    {
+        if ($this->notes->removeElement($note)) {
+            // set the owning side to null (unless already changed)
+            if ($note->getStudent() === $this) {
+                $note->setStudent(null);
+            }
+        }
+
+        return $this;
     }
     
 }

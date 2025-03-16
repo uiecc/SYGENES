@@ -14,15 +14,15 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/ec')]
 final class ECController extends AbstractController
 {
-    #[Route(name: 'app_e_c_index', methods: ['GET'])]
+    #[Route(name: 'app_ec_index', methods: ['GET'])]
     public function index(ECRepository $eCRepository): Response
     {
         return $this->render('ec/index.html.twig', [
-            'e_cs' => $eCRepository->findAll(),
+            'ecs' => $eCRepository->findAll(), // Uniformiser les noms (ecs au lieu de e_cs)
         ]);
     }
 
-    #[Route('/new', name: 'app_e_c_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_ec_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $eC = new EC();
@@ -33,24 +33,24 @@ final class ECController extends AbstractController
             $entityManager->persist($eC);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_e_c_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_ec_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('ec/new.html.twig', [
-            'e_c' => $eC,
+            'ec' => $eC, // Utiliser 'ec' au lieu de 'e_c'
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_e_c_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_ec_show', methods: ['GET'])]
     public function show(EC $eC): Response
     {
         return $this->render('ec/show.html.twig', [
-            'e_c' => $eC,
+            'ec' => $eC, // Utiliser 'ec' au lieu de 'e_c'
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_e_c_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_ec_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, EC $eC, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ECType::class, $eC);
@@ -59,16 +59,16 @@ final class ECController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_e_c_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_ec_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('ec/edit.html.twig', [
-            'e_c' => $eC,
+            'ec' => $eC, // Utiliser 'ec' au lieu de 'e_c'
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_e_c_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_ec_delete', methods: ['POST'])]
     public function delete(Request $request, EC $eC, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$eC->getId(), $request->getPayload()->getString('_token'))) {
@@ -76,6 +76,6 @@ final class ECController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_e_c_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_ec_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ECRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ECRepository::class)]
@@ -29,6 +31,20 @@ class EC
 
     #[ORM\OneToOne(mappedBy: 'ec', cascade: ['persist', 'remove'])]
     private ?Teacher $teacher = null;
+
+    #[ORM\Column]
+    private bool $hasTP = false;
+
+    /**
+     * @var Collection<int, Note>
+     */
+    #[ORM\OneToMany(targetEntity: Note::class, mappedBy: 'ec')]
+    private Collection $note;
+
+    public function __construct()
+    {
+        $this->note = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -106,4 +122,50 @@ class EC
 
         return $this;
     }
+
+
+    public function isHasTP(): bool
+    {
+        return $this->hasTP;
+    }
+
+    public function setHasTP(bool $hasTP): static
+    {
+        $this->hasTP = $hasTP;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Note>
+     */
+    public function getNote(): Collection
+    {
+        return $this->note;
+    }
+
+    public function addNote(Note $note): static
+    {
+        if (!$this->note->contains($note)) {
+            $this->note->add($note);
+            $note->setEc($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNote(Note $note): static
+    {
+        if ($this->note->removeElement($note)) {
+            // set the owning side to null (unless already changed)
+            if ($note->getEc() === $this) {
+                $note->setEc(null);
+            }
+        }
+
+        return $this;
+    }
+    
+
+
 }

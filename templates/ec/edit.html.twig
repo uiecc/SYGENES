@@ -1,13 +1,17 @@
+{# templates/ec/edit.html.twig - With Tailwind #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit EC{% endblock %}
+{% block title %}Modifier un Élément Constitutif{% endblock %}
 
 {% block body %}
-    <h1>Edit EC</h1>
-
-    {{ include('ec/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_e_c_index') }}">back to list</a>
-
-    {{ include('ec/_delete_form.html.twig') }}
+<div class="py-8 px-4 mx-auto max-w-4xl">
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-4 border-b">
+            <h1 class="text-xl font-semibold text-white">Modifier un Élément Constitutif</h1>
+        </div>
+        <div class="p-6">
+            {{ include('ec/_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}
