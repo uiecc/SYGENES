@@ -1,0 +1,371 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord du directeur d'école{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stat-card {
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .action-card {
+            transition: all 0.3s ease;
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-800 text-white p-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold">Tableau de bord - Directeur d'école</h1>
+                    <p class="mt-2 text-indigo-100">Bienvenue, {{ user.firstName }} {{ user.lastName }}</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex items-center">
+                    <img src="{{ asset('images/illustrations/school_manager.svg') }}" alt="School Manager" class="h-16 w-16 mr-4">
+                    <div>
+                        <p class="font-semibold text-xl">{{ school.name }}</p>
+                        <p class="text-indigo-200">{{ school.university.name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Info Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gray-100">
+            <div class="bg-white p-4 rounded-lg shadow text-center stat-card">
+                <p class="text-gray-500 text-sm uppercase font-semibold">Filières</p>
+                <p class="text-3xl font-bold text-indigo-600">{{ stats.fields_count }}</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow text-center stat-card">
+                <p class="text-gray-500 text-sm uppercase font-semibold">Niveaux</p>
+                <p class="text-3xl font-bold text-blue-600">{{ stats.total_levels }}</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow text-center stat-card">
+                <p class="text-gray-500 text-sm uppercase font-semibold">Étudiants</p>
+                <p class="text-3xl font-bold text-green-600">{{ stats.total_students }}</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow text-center stat-card">
+                <p class="text-gray-500 text-sm uppercase font-semibold">UE / EC</p>
+                <p class="text-3xl font-bold text-purple-600">{{ stats.total_ues }} / {{ stats.total_ecs }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column - Quick Actions -->
+        <div class="lg:col-span-1">
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                <div class="bg-gray-800 text-white p-4">
+                    <h2 class="text-xl font-semibold">Actions rapides</h2>
+                </div>
+                <div class="p-6 space-y-4">
+                    <!-- Field Management -->
+                    <div class="action-card p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                        <h3 class="text-lg font-semibold text-indigo-800">Gestion des filières</h3>
+                        <div class="mt-3 grid grid-cols-2 gap-2">
+                            <a href="{{ path('app_field_index') }}" class="text-center py-2 px-3 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 transition-colors">
+                                Liste des filières
+                            </a>
+                            <a href="{{ path('app_field_new') }}" class="text-center py-2 px-3 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 transition-colors">
+                                Ajouter filière
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Field Manager Management -->
+                    <div class="action-card p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h3 class="text-lg font-semibold text-blue-800">Gestion des resp. filière</h3>
+                        <div class="mt-3 grid grid-cols-2 gap-2">
+                            <a href="{{ path('app_field_manager_index') }}" class="text-center py-2 px-3 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors">
+                                Liste des resp.
+                            </a>
+                            <a href="{{ path('app_field_manager_new') }}" class="text-center py-2 px-3 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors">
+                                Ajouter resp.
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Level Management -->
+                    <div class="action-card p-4 bg-purple-50 rounded-lg border border-purple-200">
+                        <h3 class="text-lg font-semibold text-purple-800">Gestion des niveaux</h3>
+                        <div class="mt-3 grid grid-cols-2 gap-2">
+                            <a href="{{ path('app_level_index') }}" class="text-center py-2 px-3 bg-purple-600 text-white rounded-md text-sm hover:bg-purple-700 transition-colors">
+                                Liste des niveaux
+                            </a>
+                            <a href="{{ path('app_level_new') }}" class="text-center py-2 px-3 bg-purple-600 text-white rounded-md text-sm hover:bg-purple-700 transition-colors">
+                                Ajouter niveau
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Student Management -->
+                    <div class="action-card p-4 bg-green-50 rounded-lg border border-green-200">
+                        <h3 class="text-lg font-semibold text-green-800">Gestion des étudiants</h3>
+                        <div class="mt-3 grid grid-cols-2 gap-2">
+                            <a href="{{ path('school_manager_students') }}" class="text-center py-2 px-3 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 transition-colors">
+                                Liste des étudiants
+                            </a>
+                            <a href="{{ path('import_students') }}" class="text-center py-2 px-3 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 transition-colors">
+                                Importer étudiants
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Reports -->
+                    <div class="action-card p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <h3 class="text-lg font-semibold text-yellow-800">Rapports et statistiques</h3>
+                        <div class="mt-3 grid grid-cols-2 gap-2">
+                            <a href="{{ path('school_manager_statistics') }}" class="text-center py-2 px-3 bg-yellow-600 text-white rounded-md text-sm hover:bg-yellow-700 transition-colors">
+                                Statistiques école
+                            </a>
+                            <a href="#" class="text-center py-2 px-3 bg-yellow-600 text-white rounded-md text-sm hover:bg-yellow-700 transition-colors">
+                                Générer rapports
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Card -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <div class="bg-indigo-700 text-white p-4">
+                    <h2 class="text-xl font-semibold">Mon profil</h2>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="h-20 w-20 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
+                            {% if user.profilePhoto %}
+                                <img src="{{ asset('uploads/profiles/' ~ user.profilePhoto) }}" alt="Photo de profil" class="h-full w-full object-cover">
+                            {% else %}
+                                <span class="text-3xl text-gray-600">{{ user.firstName|first }}{{ user.lastName|first }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-semibold">{{ user.firstName }} {{ user.lastName }}</h3>
+                            <p class="text-gray-600">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <a href="{{ path('app_profile') }}" class="block w-full text-center py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+                            Voir mon profil
+                        </a>
+                        <a href="{{ path('app_profile_edit') }}" class="block w-full text-center py-2 px-4 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">
+                            Modifier mon profil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column - Statistics & Overview -->
+        <div class="lg:col-span-2">
+            <!-- Statistics Section -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4">
+                    <h2 class="text-xl font-semibold">Distribution des étudiants par filière</h2>
+                </div>
+                <div class="p-6">
+                    <div class="aspect-w-16 aspect-h-9">
+                        <canvas id="studentDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Overview of Fields -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-4">
+                    <h2 class="text-xl font-semibold">Aperçu des filières</h2>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-6">
+                        {% if fields is defined and fields|length > 0 %}
+                            {% for field in fields %}
+                                <div class="border rounded-lg overflow-hidden">
+                                    <div class="bg-indigo-100 p-4 flex justify-between items-center">
+                                        <div>
+                                            <h3 class="font-semibold text-lg text-indigo-800">{{ field.name }}</h3>
+                                            <p class="text-sm text-indigo-600">Code: {{ field.code }}</p>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                                                {{ studentsByField[field.id]|default(0) }} étudiants
+                                            </span>
+                                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                                {{ levelsByField[field.id]|length }} niveaux
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Niveaux de la filière -->
+                                    <div class="p-4">
+                                        <h4 class="font-medium text-gray-700 mb-2">Niveaux dans cette filière:</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            {% if levelsByField[field.id] is defined and levelsByField[field.id]|length > 0 %}
+                                                {% for level in levelsByField[field.id] %}
+                                                    <div class="p-2 bg-gray-50 rounded border">
+                                                        <p class="font-medium">{{ level.name }}</p>
+                                                        <p class="text-xs text-gray-500">Code: {{ level.code }}</p>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <p class="text-gray-500 text-sm">Aucun niveau dans cette filière</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Actions -->
+                                    <div class="bg-gray-50 px-4 py-3 flex justify-end space-x-2">
+                                        <a href="{{ path('app_field_show', {'id': field.id}) }}" class="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 transition-colors">
+                                            Détails
+                                        </a>
+                                        <a href="{{ path('app_field_edit', {'id': field.id}) }}" class="px-3 py-1 bg-gray-600 text-white rounded-md text-sm hover:bg-gray-700 transition-colors">
+                                            Modifier
+                                        </a>
+                                        <a href="{{ path('app_level_new', {'field': field.id}) }}" class="px-3 py-1 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 transition-colors">
+                                            + Niveau
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center p-4 bg-gray-50 rounded-lg border">
+                                <p class="text-gray-500">Aucune filière trouvée dans cette école.</p>
+                                <a href="{{ path('app_field_new') }}" class="mt-2 inline-block px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+                                    Ajouter une filière
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Manager Overview -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-4">
+                    <h2 class="text-xl font-semibold">Responsables</h2>
+                </div>
+                <div class="p-6">
+                    <ul class="divide-y divide-gray-200">
+                        <li class="py-3">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-medium">Responsables de filière</h3>
+                                <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
+                                    {{ stats.field_managers_count }} / {{ stats.fields_count }}
+                                </span>
+                            </div>
+                            {% if fieldManagers is defined and fieldManagers|length > 0 %}
+                                <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    {% for manager in fieldManagers %}
+                                        <div class="p-2 bg-purple-50 rounded border border-purple-200 flex items-center space-x-2">
+                                            <div class="h-8 w-8 rounded-full bg-purple-200 flex items-center justify-center text-purple-700 font-bold">
+                                                {{ manager.firstName|first }}{{ manager.lastName|first }}
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="font-medium">{{ manager.firstName }} {{ manager.lastName }}</p>
+                                                <p class="text-xs text-gray-500">{{ manager.field.name }}</p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-gray-500 text-sm mt-2">Aucun responsable de filière</p>
+                            {% endif %}
+                        </li>
+                        <li class="py-3">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-medium">Responsables de niveau</h3>
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                    {{ stats.level_managers_count }} / {{ stats.total_levels }}
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <a href="{{ path('app_level_manager_index') }}" class="text-blue-600 hover:text-blue-800 text-sm">
+                                    Voir tous les responsables de niveau →
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Student Distribution Chart
+                const studentDistributionCtx = document.getElementById('studentDistributionChart').getContext('2d');
+                new Chart(studentDistributionCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: [
+                            {% if fields is defined %}
+                                {% for field in fields %}
+                                    '{{ field.name }}',
+                                {% endfor %}
+                            {% endif %}
+                        ],
+                        datasets: [{
+                            data: [
+                                {% if fields is defined %}
+                                    {% for field in fields %}
+                                        {{ studentsByField[field.id]|default(0) }},
+                                    {% endfor %}
+                                {% endif %}
+                            ],
+                            backgroundColor: [
+                                'rgba(79, 70, 229, 0.8)',
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(139, 92, 246, 0.8)',
+                                'rgba(14, 165, 233, 0.8)',
+                                'rgba(249, 115, 22, 0.8)',
+                                'rgba(236, 72, 153, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(79, 70, 229, 1)',
+                                'rgba(16, 185, 129, 1)',
+                                'rgba(245, 158, 11, 1)',
+                                'rgba(239, 68, 68, 1)',
+                                'rgba(139, 92, 246, 1)',
+                                'rgba(14, 165, 233, 1)',
+                                'rgba(249, 115, 22, 1)',
+                                'rgba(236, 72, 153, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error("Erreur lors de l'initialisation des graphiques:", e);
+            }
+        });
+    </script>
+{% endblock %}

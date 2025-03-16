@@ -79,4 +79,80 @@ class UERepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Compte le nombre total d'UE pour un niveau
+     */
+    public function countByLevel(Level $level): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->join('u.semester', 's')
+            ->where('s.level = :level')
+            ->setParameter('level', $level)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Compte le nombre d'UE obligatoires pour un niveau
+     */
+    public function countCompulsoryByLevel(Level $level): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->join('u.semester', 's')
+            ->where('s.level = :level')
+            ->andWhere('u.isCompulsory = :compulsory')
+            ->setParameter('level', $level)
+            ->setParameter('compulsory', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Compte le nombre d'UE optionnelles pour un niveau
+     */
+    public function countOptionalByLevel(Level $level): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->join('u.semester', 's')
+            ->where('s.level = :level')
+            ->andWhere('u.isCompulsory = :compulsory')
+            ->setParameter('level', $level)
+            ->setParameter('compulsory', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Compte le nombre d'UE par semestre pour un niveau
+     */
+    public function countBySemester(Level $level): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('s.id, s.name, s.code, COUNT(u.id) as ue_count')
+            ->join('u.semester', 's')
+            ->where('s.level = :level')
+            ->setParameter('level', $level)
+            ->groupBy('s.id')
+            ->orderBy('s.code', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    // UERepository.php
+    public function countBySchool($school): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->join('u.semester', 's')
+            ->join('s.level', 'l')
+            ->join('l.field', 'f')
+            ->where('f.school = :school')
+            ->setParameter('school', $school)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

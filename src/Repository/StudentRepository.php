@@ -16,6 +16,18 @@ class StudentRepository extends ServiceEntityRepository
         parent::__construct($registry, Student::class);
     }
 
+        // StudentRepository.php
+    public function countByField($field): int
+    {
+        return $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->join('s.level', 'l')
+            ->where('l.field = :field')
+            ->setParameter('field', $field)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Student[] Returns an array of Student objects
     //     */

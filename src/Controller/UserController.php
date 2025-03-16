@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Administrator;
+use App\Entity\FieldManager;
+use App\Entity\LevelManager;
 use App\Entity\Student;
 use App\Entity\Role;
 use App\Entity\Responsable;
+use App\Entity\SchoolManager;
 use App\Entity\User;
 use App\Form\StudentType;
 use App\Form\ResponsableType;
@@ -119,7 +123,7 @@ class UserController extends AbstractController
             if ($this->getUser() instanceof Student) {
                 return $this->redirectToRoute('student_dashboard');
             }
-            
+
             // Pour les autres utilisateurs, rediriger vers la page d'accueil
             return $this->redirectToRoute('app_home');
         }
@@ -135,49 +139,76 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/verify-code', name: 'app_verify_code', methods: ['GET', 'POST'])]
-    public function verifyCode(Request $request, VerificationCodeService $codeService): Response
-    {
+    #[Route('/verify-code', name: 'app_verify_code')]
+    public function verify(
+        Request $request,
+        UserRepository $userRepository,
+        VerificationCodeService $verificationCodeService
+    ): Response {
         $session = $request->getSession();
-    
-        // Rediriger si déjà complètement authentifié
-        if ($session->get('is_fully_authenticated')) {
-            // Si l'utilisateur est un étudiant, le rediriger vers le dashboard étudiant
-            if ($this->getUser() instanceof Student) {
-                return $this->redirectToRoute('student_dashboard');
-            }
-            
-            // Pour les autres utilisateurs, rediriger vers la page d'accueil
-            return $this->redirectToRoute('app_home');
-        }
-    
-        // Vérifier si en attente de vérification
+
+        // Vérifier si la vérification à deux facteurs est nécessaire
         if (!$session->get('needs_2fa_verification')) {
             return $this->redirectToRoute('app_login');
         }
-    
+
+        // Récupérer l'utilisateur en attente
+        $pendingUserId = $session->get('pending_user_id');
+        if (!$pendingUserId) {
+            $session->remove('needs_2fa_verification');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $user = $userRepository->find($pendingUserId);
+        if (!$user) {
+            $session->remove('needs_2fa_verification');
+            $session->remove('pending_user_id');
+            $this->addFlash('error', 'Utilisateur non trouvé.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Traiter le formulaire de vérification
         if ($request->isMethod('POST')) {
             $code = $request->request->get('verification_code');
-    
-            if ($codeService->isCodeValid($this->getUser(), $code)) {
+
+            if ($verificationCodeService->isCodeValid($user, $code)) {
+                // Code valide - marquer l'authentification comme complète
                 $session->set('is_fully_authenticated', true);
-                $session->remove('needs_2fa_verification');
-                $session->remove('pending_user_id');
-    
-                // Si l'utilisateur est un étudiant, le rediriger vers le dashboard étudiant
-                if ($this->getUser() instanceof Student) {
-                    return $this->redirectToRoute('student_dashboard');
-                }
-                
-                // Pour les autres utilisateurs, rediriger vers la page d'accueil
-                return $this->redirectToRoute('app_home');
+
+                // Rediriger - l'authenticator s'occupera de la redirection spécifique
+                return $this->redirectToRoute('app_check_auth');
             }
-    
-            $this->addFlash('error', 'Code invalide ou expiré');
+
+            $this->addFlash('error', 'Code de vérification invalide. Veuillez réessayer.');
         }
-    
-        return $this->render('user/verify_code.html.twig');
+
+        return $this->render('user/verify_code.html.twig', [
+            'user' => $user,
+        ]);
     }
+
+    #[Route('/check-auth', name: 'app_check_auth')]
+    public function checkAuth(): Response
+    {
+        $user = $this->getUser();
+
+        // Rediriger en fonction du type d'utilisateur
+        if ($user instanceof Student) {
+            return $this->redirectToRoute('student_dashboard');
+        } else if ($user instanceof LevelManager) {
+            return $this->redirectToRoute('level_manager_dashboard');
+        } else if ($user instanceof FieldManager) {
+            return $this->redirectToRoute('field_manager_dashboard');
+        } else if ($user instanceof SchoolManager) {
+            return $this->redirectToRoute('school_manager_dashboard');
+        } else if ($user instanceof Administrator) {
+            return $this->redirectToRoute('admin_dashboard');
+        }
+
+        // Redirection par défaut
+        return $this->redirectToRoute('app_home');
+    }
+
     #[Route('/resend-code', name: 'app_resend_code')]
     public function resendCode(Request $request, VerificationCodeService $codeService): Response
     {
@@ -202,6 +233,7 @@ class UserController extends AbstractController
 
 
     #[Route('/profile', name: 'app_profile_show', methods: ['GET'])]
+    #[Route('/profile', name: 'app_profile', methods: ['GET'])] // Alias pour compatibilité
     public function show(): Response
     {
         $user = $this->getUser();
@@ -276,4 +308,41 @@ class UserController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+    #[Route('/profile/change-password', name: 'app_change_password', methods: ['GET', 'POST'])]
+public function changePassword(
+    Request $request,
+    EntityManagerInterface $entityManager,
+    UserPasswordHasherInterface $passwordHasher
+): Response {
+    $user = $this->getUser();
+    if (!$user) {
+        throw $this->createAccessDeniedException();
+    }
+    
+    // Créer un formulaire pour le changement de mot de passe
+    $form = $this->createForm(ChangePasswordType::class);
+    $form->handleRequest($request);
+    
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Vérifier l'ancien mot de passe
+        if (!$passwordHasher->isPasswordValid($user, $form->get('currentPassword')->getData())) {
+            $form->get('currentPassword')->addError(new FormError('Mot de passe actuel incorrect'));
+            return $this->render('user/change_password.html.twig', [
+                'form' => $form->createView()
+            ]);
+        }
+        
+        // Définir le nouveau mot de passe
+        $user->setPassword($passwordHasher->hashPassword($user, $form->get('newPassword')->getData()));
+        $entityManager->flush();
+        
+        $this->addFlash('success', 'Mot de passe modifié avec succès');
+        return $this->redirectToRoute('app_profile_show');
+    }
+    
+    return $this->render('user/change_password.html.twig', [
+        'form' => $form->createView()
+    ]);
+}
 }
