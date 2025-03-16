@@ -16,6 +16,17 @@ class FieldManagerRepository extends ServiceEntityRepository
         parent::__construct($registry, FieldManager::class);
     }
 
+    // FieldManagerRepository.php
+    public function findBySchool($school): array
+    {
+        return $this->createQueryBuilder('fm')
+            ->join('fm.field', 'f')
+            ->where('f.school = :school')
+            ->setParameter('school', $school)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return FieldManager[] Returns an array of FieldManager objects
     //     */

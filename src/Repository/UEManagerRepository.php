@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\UEManager;
+use App\Entity\Level;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,21 @@ class UEManagerRepository extends ServiceEntityRepository
         parent::__construct($registry, UEManager::class);
     }
 
-    //    /**
-    //     * @return UEManager[] Returns an array of UEManager objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?UEManager
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Trouve tous les responsables d'UE associés aux UE d'un niveau spécifique
+     * 
+     * @param Level $level
+     * @return UEManager[]
+     */
+    public function findByLevelUEs(Level $level): array
+    {
+        return $this->createQueryBuilder('um')
+            ->join('um.ue', 'u') // Notez le changement ici: ue au singulier
+            ->join('u.semester', 's')
+            ->where('s.level = :level')
+            ->setParameter('level', $level)
+            ->orderBy('um.lastName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

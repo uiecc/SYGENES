@@ -1,4 +1,52 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="mb-3">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name) }}
+                {{ form_errors(form.name) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.code) }}
+                {{ form_widget(form.code) }}
+                {{ form_errors(form.code) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.credit) }}
+                {{ form_widget(form.credit) }}
+                {{ form_errors(form.credit) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.semester) }}
+                {{ form_widget(form.semester) }}
+                {{ form_errors(form.semester) }}
+                {% if form.semester.vars.choices is empty %}
+                    <div class="alert alert-warning mt-2">
+                        Aucun semestre disponible pour ce niveau. Veuillez d'abord créer des semestres.
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3 form-check">
+                {{ form_widget(form.isCompulsory) }}
+                {{ form_label(form.isCompulsory) }}
+                {{ form_errors(form.isCompulsory) }}
+            </div>
+
+            {% if form.vars.valid == false and form.vars.submitted %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form) }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                {{ button_label|default('Enregistrer') }}
+            </button>
+            <a href="{{ path('app_u_e_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        </div>
+    </div>
 {{ form_end(form) }}

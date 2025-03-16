@@ -50,14 +50,14 @@
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="form-group">
-                    <label for="{{ form.function.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.function.vars.label }}</label>
-                    {{ form_widget(form.function, {
+                    <label for="{{ form.fonction.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.fonction.vars.label }}</label>
+                    {{ form_widget(form.fonction, {
                       'attr': {
                         'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
                         'placeholder': 'Job function'
                       }
                     }) }}
-                    {{ form_errors(form.function, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                    {{ form_errors(form.fonction, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
                   </div>
                   
                   <div class="form-group">

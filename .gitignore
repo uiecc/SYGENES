@@ -1,17 +1,23 @@
-###> symfony/framework-bundle ###
+# Ignorer les fichiers d'environnement
+/.env
 /.env.local
 /.env.dev
 /.env
 /.env.test
 /.env.local.php
 /.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
-/vendor/
-###< symfony/framework-bundle ###
 
-###> phpunit/phpunit ###
+# Ignorer les fichiers de configuration sensibles
+/config/secrets/prod/prod.decrypt.private.php
+
+# Ignorer les dépendances et caches
+/vendor/
+/var/
+
+# Ignorer les fichiers générés par Symfony
+/public/bundles/
+
+# Ignorer les fichiers liés à PHPUnit
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###

@@ -16,6 +16,18 @@ class LevelManagerRepository extends ServiceEntityRepository
         parent::__construct($registry, LevelManager::class);
     }
 
+    // LevelManagerRepository.php
+    public function countBySchool($school): int
+    {
+        return $this->createQueryBuilder('lm')
+            ->select('COUNT(lm.id)')
+            ->join('lm.level', 'l')
+            ->join('l.field', 'f')
+            ->where('f.school = :school')
+            ->setParameter('school', $school)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
     //    /**
     //     * @return LevelManager[] Returns an array of LevelManager objects
     //     */

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\LevelManager;
 use App\Entity\Semester;
 use App\Form\SemesterType;
 use App\Repository\SemesterRepository;
@@ -22,17 +23,36 @@ final class SemesterController extends AbstractController
         ]);
     }
 
+    // SemesterController.php
     #[Route('/new', name: 'app_semester_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        /** @var LevelManager $levelManager */
+        $levelManager = $this->getUser();
+
+        if (!$levelManager instanceof LevelManager) {
+            throw $this->createAccessDeniedException('Vous devez être responsable de niveau pour accéder à cette page.');
+        }
+
         $semester = new Semester();
-        $form = $this->createForm(SemesterType::class, $semester);
+        // Pré-remplir le niveau avec celui du LevelManager
+        $semester->setLevel($levelManager->getLevel());
+
+        $form = $this->createForm(SemesterType::class, $semester, [
+            'levelManager' => $levelManager
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Vérification supplémentaire que le niveau est bien celui du LevelManager
+            if ($semester->getLevel()->getId() !== $levelManager->getLevel()->getId()) {
+                throw $this->createAccessDeniedException('Vous ne pouvez créer des semestres que pour votre propre niveau.');
+            }
+
             $entityManager->persist($semester);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Le semestre a été créé avec succès.');
             return $this->redirectToRoute('app_semester_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -41,7 +61,6 @@ final class SemesterController extends AbstractController
             'form' => $form,
         ]);
     }
-
     #[Route('/{id}', name: 'app_semester_show', methods: ['GET'])]
     public function show(Semester $semester): Response
     {
@@ -71,7 +90,7 @@ final class SemesterController extends AbstractController
     #[Route('/{id}', name: 'app_semester_delete', methods: ['POST'])]
     public function delete(Request $request, Semester $semester, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$semester->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $semester->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($semester);
             $entityManager->flush();
         }

@@ -27,6 +27,12 @@ services:
         arguments:
             $targetDirectory: '%uploads_directory%'
     
+    # Configuration du service AcademicRegistrationService
+    App\Service\AcademicRegistrationService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $ueRepository: '@App\Repository\UERepository'
+    
     # Configuration de l'écouteur de login
     App\EventListener\LoginListener:
         tags:
@@ -42,6 +48,15 @@ services:
     App\EventListener\LogoutListener:
         tags:
             - { name: kernel.event_listener, event: Symfony\Component\Security\Http\Event\LogoutEvent }
+
+    # Configuration du service ExcelImportService
+    App\Service\ExcelImportService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $passwordHasher: '@security.password_hasher'
+            $logger: '@logger'
+            $validator: '@validator'
+            $doctrine: '@doctrine'
             
     App\EventListener\LocaleListener:
         tags:

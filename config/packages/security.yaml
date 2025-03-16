@@ -3,9 +3,19 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
     providers:
+        # Définir plusieurs fournisseurs pour gérer les différentes entités d'utilisateurs
+        chain_provider:
+            chain:
+                providers: [app_user_provider, app_student_provider]
+        
         app_user_provider:
             entity:
                 class: App\Entity\User
+                property: username
+                
+        app_student_provider:
+            entity:
+                class: App\Entity\Student
                 property: username
 
     firewalls:
@@ -15,7 +25,7 @@ security:
         main:
             pattern: ^/
             lazy: true
-            provider: app_user_provider
+            provider: chain_provider  # Utilisez le fournisseur en chaîne
             custom_authenticator: App\Security\TwoFactorAuthenticator
             logout:
                 path: app_logout
@@ -27,6 +37,7 @@ security:
         - { path: ^/verify-code, roles: PUBLIC_ACCESS }
         - { path: ^/resend-code, roles: PUBLIC_ACCESS }
         - { path: ^/field-manager/new, roles: PUBLIC_ACCESS }
-        - { path: ^/administrator/new, roles: PUBLIC_ACCESS }
+        - { path: ^/student, roles: ROLE_STUDENT }
+        - { path: ^/admin/new, roles: PUBLIC_ACCESS }
         - { path: ^/university/new, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: PUBLIC_ACCESS }

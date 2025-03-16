@@ -1,0 +1,330 @@
+{# templates/student/registration_pdf.html.twig #}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Fiche d'inscription académique</title>
+		<style>
+			body {
+				font-family: 'Times New Roman', Times, serif;
+				line-height: 1.6;
+				margin: 16px;
+			}
+			.header {
+				text-align: center;
+				margin-bottom: 30px;
+			}
+			.logo {
+				width: 150px;
+				margin-bottom: 10px;
+			}
+			.title {
+				font-size: 18px;
+				font-weight: bold;
+				text-align: center;
+				margin: 20px 0;
+				text-transform: uppercase;
+			}
+			.field {
+				margin-bottom: 13px;
+				font-size: 12px;
+			}
+			.field-label {
+				font-weight: bold;
+				margin-right: 10px;
+			}
+
+			.field-header {
+				display: flex;
+				align-items: center;
+			}
+
+			/* Italicized translation style */
+			.field-translation {
+				margin-top: 4px;
+				font-style: italic;
+				font-size: 11px;
+				color: #666;
+			}
+
+			.field-label,
+			.field-translation {
+				display: block;
+			}
+			.field-value {
+				flex: 1; /* Fills the remaining width */
+				border-bottom: 1px dotted #000;
+				padding: 2px 5px;
+			}
+			.activities {
+				margin-top: 20px;
+			}
+			.activities-title {
+				font-weight: bold;
+				margin-bottom: 10px;
+			}
+			.activity-box {
+				display: inline-block;
+				border: 1px solid #000;
+				padding: 5px 15px;
+				margin-right: 10px;
+			}
+			.signature-section {
+				margin-top: 30px;
+				display: flex;
+				justify-content: space-between;
+			}
+			.signature-box {
+				border-top: 1px solid #000;
+				width: 200px;
+				text-align: center;
+				padding-top: 5px;
+			}
+            .ue-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                margin-bottom: 20px;
+                font-size: 11px;
+            }
+            .ue-table th, .ue-table td {
+                border: 1px solid #000;
+                padding: 4px 6px;
+                text-align: left;
+            }
+            .ue-table th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+            .semester-title {
+                font-weight: bold;
+                font-size: 12px;
+                margin-top: 15px;
+                margin-bottom: 5px;
+                text-decoration: underline;
+            }
+            .ue-compulsory {
+                background-color: #fff2e6;
+            }
+            .ue-optional {
+                background-color: #f9f9f9;
+            }
+            .total-credits {
+                font-weight: bold;
+                text-align: right;
+                margin-top: 10px;
+                font-size: 12px;
+            }
+		</style>
+	</head>
+	<body>
+		<table style="margin-bottom: 5px;">
+			<tr>
+				<td width="40%" style="text-align: center; font-size: 11px; line-height: 1.1;">
+					<p>UNIVERSITE INTER-ETATS<br>CONGO-CAMEROUN À SANGMELIMA<br>****<br>Ecole Supérieure Internationale
+																																																																																																																																																																																																																            de Génie Numérique<br>****
+						<br>
+						Section de la Vie Etudiante
+						<br>****
+						<br>
+						Pool Administratif C
+						<br>****
+						<br>
+						B.P 53 Sangmelima
+						<br>
+						Tel:(+237) 691 71 73 91
+					</p>
+				</td>
+				<td width="20%" style="text-align: center;">
+					<img src="{{ absolute_url(asset('/images/uiecc_logo_old1.png')) }}" alt="Logo" class="logo" style="display: block; margin: 0 auto;">
+				</td>
+				<td width="40%" style="text-align: center; font-size: 11px; line-height: 1.1;">
+					<p>CONGO-CAMEROON INTER-STATES<br>UNIVERSITY AT SANGMELIMA<br>****<br>International Advanced School
+																																																																																																																																																																																																																									of Digital Engineering<br>****
+						<br>
+						Student Life Section
+						<br>****
+						<br>
+						Administrative Pool C
+						<br>****
+						<br>
+						P.O.Box 53 Sangmelima
+						<br>
+						Tel:(+237) 691 71 73 91
+					</p>
+				</td>
+			</tr>
+		</table>
+
+		<div style="text-align: right; font-style: italic; font-size: 11px; margin-bottom: 3px;">
+			Sangmelima le, {{ "now"|date("d/m/Y") }}
+		</div>
+
+		<div class="title" style="font-size:13px; background-color: #333333; color: white; padding: 5px; margin-bottom: 10px; text-align: center; font-weight: bold; border-radius: 6px;">
+			FICHE D'INSCRIPTION ACADÉMIQUE {{ academicYear }}
+		</div>
+
+		<div style="border: 1px solid #000; padding: 15px; margin-bottom: 15px; box-sizing: border-box;">
+			{# Header Section #}
+			<div style="text-align: left; font-weight: bold; font-size: 13px; margin-bottom: 3px;">
+				Cadre réservé à l'administration / For Official Use Only
+			</div>
+
+			<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+				<tr>
+					<td style="font-weight: bold; font-size: 12px;">
+						<strong>1- Année académique / Academic Year:</strong>
+						{{ academicYear }}
+					</td>
+				</tr>
+				<tr>
+					<td style="font-weight: bold; padding-top: 10px; font-size: 12px;">
+						<small>2- N°..............UIECC/ESIGN/SVE/RPA-C/{{ academicYear }}</small>
+					</td>
+				</tr>
+			</table>
+
+			<hr style="border: 0; height: 1px; background-color: #777; margin: 8px 0; width: 100%;">
+
+			{# Student Info Section Title #}
+			<div style="text-align: center; font-weight: bold; font-size: 13px; margin-bottom: 10px; text-decoration: underline;">
+				Informations de l'étudiant / Student information
+			</div>
+
+			{# Student Details Table #}
+			<table style="width: 100%; border-collapse: collapse; table-layout: fixed; line-height: 1.1;">
+				{# Name #}
+				<tr>
+					<td style="font-size: 12px; font-weight: bold; width: 40% ; vertical-align: top; padding: 5px 0;">
+						3- Noms et prénoms de l'étudiant:
+					</td>
+					<td style="font-size: 12px; border-bottom: 1px dotted #000; padding: 5px 0; width: 60%">
+						{{ student.firstName }} {{ student.lastName }}
+					</td>
+				</tr>
+				<tr>
+					<td style="font-style: italic; font-size: 11px; padding-bottom: 10px;">
+						<span style="margin-left: 15px; display: block; margin-top: -5px;">Name and surname of student</span>
+					</td>
+					<td></td>
+				</tr>
+
+				{# Matricule #}
+				<tr>
+					<td style="font-size: 12px; font-weight: bold; width: 40% ; vertical-align: top; padding: 5px 0;">
+						4- Matricule:
+					</td>
+					<td style="font-size: 12px; border-bottom: 1px dotted #000; padding: 5px 0; width: 60%">
+						{{ student.matricule }}
+					</td>
+				</tr>
+				<tr>
+					<td style="font-style: italic; font-size: 11px; padding-bottom: 10px;">
+						<span style="margin-left: 15px; display: block; margin-top: -5px;">Registration number</span>
+					</td>
+					<td></td>
+				</tr>
+
+				{# Level #}
+				<tr>
+					<td style="font-size: 12px; font-weight: bold; width: 40% ; vertical-align: top; padding: 5px 0;">
+						5- Niveau:
+					</td>
+					<td style="font-size: 12px; border-bottom: 1px dotted #000; padding: 5px 0; width: 60%">
+						{{ student.level.name }}
+					</td>
+				</tr>
+				<tr>
+					<td style="font-style: italic; font-size: 11px; padding-bottom: 10px;">
+						<span style="margin-left: 15px; display: block; margin-top: -5px;">Level</span>
+					</td>
+					<td></td>
+				</tr>
+			</table>
+
+			{# Academic Registration Section #}
+			<div style="text-align: center; font-weight: bold; font-size: 13px; margin: 20px 0 10px 0; text-decoration: underline;">
+				Unités d'Enseignement sélectionnées / Selected Course Units
+			</div>
+
+			{% set totalCredits = 0 %}
+			{% set currentSemester = null %}
+			
+			{% for studentUE in studentUEs %}
+				{% set ue = studentUE.ue %}
+				{% set totalCredits = totalCredits + ue.credit %}
+				
+				{% if currentSemester != ue.semester.name %}
+					{% if currentSemester != null %}
+						</tbody>
+						</table>
+					{% endif %}
+					
+					{% set currentSemester = ue.semester.name %}
+					<div class="semester-title">Semestre {{ ue.semester.name }}</div>
+					<table class="ue-table">
+						<thead>
+							<tr>
+								<th style="width: 15%;">Code</th>
+								<th style="width: 55%;">Unité d'Enseignement</th>
+								<th style="width: 15%;">Crédits</th>
+								<th style="width: 15%;">Type</th>
+							</tr>
+						</thead>
+						<tbody>
+				{% endif %}
+				
+				<tr class="{{ ue.isCompulsory ? 'ue-compulsory' : 'ue-optional' }}">
+					<td>{{ ue.code }}</td>
+					<td>{{ ue.name }}</td>
+					<td style="text-align: center;">{{ ue.credit }}</td>
+					<td>{{ ue.isCompulsory ? 'Obligatoire' : 'Optionnel' }}</td>
+				</tr>
+			{% endfor %}
+			
+			{% if currentSemester != null %}
+				</tbody>
+				</table>
+			{% endif %}
+			
+			<div class="total-credits">
+				Total des crédits: {{ totalCredits }}
+			</div>
+
+			{# Signature Section #}
+			<table style="width: 100%; margin-top: 40px;">
+				<tr>
+					<td style="width: 33%; vertical-align: top; text-align: center;">
+						<div style="font-weight: bold; font-size: 12px; text-decoration: underline; margin-bottom: 60px;">
+							Signature de l'étudiant
+						</div>
+						<div style="font-style: italic; font-size: 11px;">
+							Student's signature
+						</div>
+					</td>
+					<td style="width: 33%; vertical-align: top; text-align: center;">
+						<div style="font-weight: bold; font-size: 12px; text-decoration: underline; margin-bottom: 60px;">
+							Le Chef de Département
+						</div>
+						<div style="font-style: italic; font-size: 11px;">
+							Department Head
+						</div>
+					</td>
+					<td style="width: 33%; vertical-align: top; text-align: center;">
+						<div style="font-weight: bold; font-size: 12px; text-decoration: underline; margin-bottom: 60px;">
+							Le Chef Section de la Vie Étudiante
+						</div>
+						<div style="font-style: italic; font-size: 11px;">
+							Head of Student Life Section
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div style="border-top: 3px solid #000; width: 100%; margin: 0 auto;"></div>
+		<div style="text-align: left; margin-top: 5px; font-size: 10px; font-weight: bold;">
+			SECTION DE LA VIE ÉTUDIANTE
+		</div>
+	</body>
+</html>

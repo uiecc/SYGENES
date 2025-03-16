@@ -16,7 +16,7 @@ class LevelType extends AbstractType
         $builder
             ->add('name')
             ->add('code')
-            ->add('filed', EntityType::class, [
+            ->add('field', EntityType::class, [
                 'class' => Field::class,
                 'choice_label' => 'id',
             ])
