@@ -24,6 +24,9 @@ class UE
     #[ORM\Column]
     private ?int $credit = null;
 
+    #[ORM\Column(options: ["default" => true])]
+    private bool $isCompulsory = true;
+
     #[ORM\ManyToOne(inversedBy: 'uEs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Semester $semester = null;
@@ -37,9 +40,16 @@ class UE
     #[ORM\OneToOne(mappedBy: 'ue', cascade: ['persist', 'remove'])]
     private ?UEManager $uEManager = null;
 
+    /**
+     * @var Collection<int, StudentUE>
+     */
+    #[ORM\OneToMany(mappedBy: 'ue', targetEntity: StudentUE::class, orphanRemoval: true)]
+    private Collection $studentUEs;
+
     public function __construct()
     {
         $this->eCs = new ArrayCollection();
+        $this->studentUEs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,6 +89,18 @@ class UE
     public function setCredit(int $credit): static
     {
         $this->credit = $credit;
+
+        return $this;
+    }
+
+    public function isCompulsory(): bool
+    {
+        return $this->isCompulsory;
+    }
+
+    public function setIsCompulsory(bool $isCompulsory): static
+    {
+        $this->isCompulsory = $isCompulsory;
 
         return $this;
     }
@@ -143,6 +165,36 @@ class UE
         }
 
         $this->uEManager = $uEManager;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StudentUE>
+     */
+    public function getStudentUEs(): Collection
+    {
+        return $this->studentUEs;
+    }
+
+    public function addStudentUE(StudentUE $studentUE): static
+    {
+        if (!$this->studentUEs->contains($studentUE)) {
+            $this->studentUEs->add($studentUE);
+            $studentUE->setUe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudentUE(StudentUE $studentUE): static
+    {
+        if ($this->studentUEs->removeElement($studentUE)) {
+            // set the owning side to null (unless already changed)
+            if ($studentUE->getUe() === $this) {
+                $studentUE->setUe(null);
+            }
+        }
 
         return $this;
     }

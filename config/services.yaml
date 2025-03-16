@@ -27,6 +27,12 @@ services:
         arguments:
             $targetDirectory: '%uploads_directory%'
     
+    # Configuration du service AcademicRegistrationService
+    App\Service\AcademicRegistrationService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $ueRepository: '@App\Repository\UERepository'
+    
     # Configuration de l'écouteur de login
     App\EventListener\LoginListener:
         tags:
