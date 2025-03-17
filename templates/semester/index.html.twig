@@ -1,37 +1,46 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Semester index{% endblock %}
-
 {% block body %}
-    <h1>Semester index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Code</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for semester in semesters %}
-            <tr>
-                <td>{{ semester.id }}</td>
-                <td>{{ semester.name }}</td>
-                <td>{{ semester.code }}</td>
-                <td>
-                    <a href="{{ path('app_semester_show', {'id': semester.id}) }}">show</a>
-                    <a href="{{ path('app_semester_edit', {'id': semester.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_semester_new') }}">Create new</a>
+    <div class="container mx-auto px-4 py-6 h-screen">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Semester index</h1>
+            <div class="mt-3 md:mt-0">
+                <a href="{{ path('app_semester_new') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-orange">
+                    Create new
+                </a>
+            </div>
+        </div>
+        
+        <div class="overflow-x-auto bg-white dark:bg-gray-800 shadow rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Id</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Code</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for semester in semesters %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ semester.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ semester.name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ semester.code }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex space-x-2">
+                                <a href="{{ path('app_semester_show', {'id': semester.id}) }}" class="text-custom-orange hover:text-custom-orange/80 dark:text-custom-orange dark:hover:text-custom-orange/80">show</a>
+                                <a href="{{ path('app_semester_edit', {'id': semester.id}) }}" class="text-custom-orange hover:text-custom-orange/80 dark:text-custom-orange dark:hover:text-custom-orange/80">edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">no records found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

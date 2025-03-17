@@ -1,30 +1,83 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Field{% endblock %}
-
+{% block title %}Détails de la Filière{% endblock %}
 {% block body %}
-    <h1>Field</h1>
+    <div class="container mx-auto px-4 py-6">
+        <div class="mb-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Détails de la Filière</h1>
+            <div class="flex space-x-3">
+                <a href="{{ path('app_field_index') }}" class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Retour à la liste
+                </a>
+                <a href="{{ path('app_field_edit', {'id': field.id}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none">
+                    <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Modifier
+                </a>
+            </div>
+        </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ field.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ field.name }}</td>
-            </tr>
-            <tr>
-                <th>Code</th>
-                <td>{{ field.code }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col sm:flex-row">
+                    <div class="flex-shrink-0 mb-4 sm:mb-0 sm:mr-6">
+                        <div class="h-24 w-24 bg-custom-orange/20 flex items-center justify-center border-2 border-custom-orange rounded-md">
+                            <svg class="h-12 w-12 text-custom-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ field.name }}</h2>
+                        <p class="text-custom-orange">Code: {{ field.code }}</p>
+                        {% if field.school %}
+                            <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                                École: {{ field.school.name }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
 
-    <a href="{{ path('app_field_index') }}">back to list</a>
-
-    <a href="{{ path('app_field_edit', {'id': field.id}) }}">edit</a>
-
-    {{ include('field/_delete_form.html.twig') }}
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">ID</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ field.id }}</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Nom</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ field.name }}</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Code</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ field.code }}</p>
+                    </div>
+                    
+                    {% if field.school %}
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">École</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ field.school.name }}</p>
+                    </div>
+                    
+                    {% if field.school.university %}
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Université</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ field.school.university.name }}</p>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            {{ include('field/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

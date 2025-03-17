@@ -1,34 +1,91 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}EC{% endblock %}
-
+{% block title %}Élément Constitutif{% endblock %}
 {% block body %}
-    <h1>EC</h1>
+    <div class="container mx-auto px-4 py-6">
+        <div class="mb-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Détails de l'Élément Constitutif</h1>
+            <div class="flex space-x-3">
+                <a href="{{ path('app_e_c_index') }}" class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Retour à la liste
+                </a>
+                <a href="{{ path('app_e_c_edit', {'id': e_c.id}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none">
+                    <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Modifier
+                </a>
+            </div>
+        </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ e_c.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ e_c.name }}</td>
-            </tr>
-            <tr>
-                <th>Code</th>
-                <td>{{ e_c.code }}</td>
-            </tr>
-            <tr>
-                <th>Credit</th>
-                <td>{{ e_c.credit }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col sm:flex-row">
+                    <div class="flex-shrink-0 mb-4 sm:mb-0 sm:mr-6">
+                        <div class="h-24 w-24 bg-custom-orange/20 flex items-center justify-center border-2 border-custom-orange rounded-md">
+                            <svg class="h-12 w-12 text-custom-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ e_c.name }}</h2>
+                        <p class="text-custom-orange">Code: {{ e_c.code }}</p>
+                        <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            Crédits: {{ e_c.credit }}
+                        </div>
+                        {% if e_c.ue is defined and e_c.ue %}
+                            <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                                UE: {{ e_c.ue.name }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
 
-    <a href="{{ path('app_e_c_index') }}">back to list</a>
-
-    <a href="{{ path('app_e_c_edit', {'id': e_c.id}) }}">edit</a>
-
-    {{ include('ec/_delete_form.html.twig') }}
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">ID</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ e_c.id }}</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Nom</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ e_c.name }}</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Code</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ e_c.code }}</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Crédits</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ e_c.credit }}</p>
+                    </div>
+                    
+                    {% if e_c.ue is defined and e_c.ue %}
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">UE</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ e_c.ue.name }}</p>
+                    </div>
+                    
+                    {% if e_c.ue.semester is defined and e_c.ue.semester %}
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Semestre</h3>
+                        <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ e_c.ue.semester.name }}</p>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            {{ include('ec/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

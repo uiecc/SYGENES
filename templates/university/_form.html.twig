@@ -1,23 +1,19 @@
-
-
 {% block title %}<title>Create University</title>{% endblock %}
 
 {% block body %}
 <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-6xl w-full space-y-8 bg-white rounded-xl overflow-hidden p-8">
+  <div class="max-w-6xl w-full space-y-8 bg-white rounded-xl overflow-hidden p-4 sm:p-8">
     <div class="flex flex-col md:flex-row">
       <!-- Left side - Image -->
       <div class="w-full md:w-1/2 mb-8 md:mb-0">
-        <div class=" hidden md:block relative p-4 md:p-8 flex items-center justify-center">
-          <img src="{{ asset('images/illustrations/university.svg') }}" alt="University Creation" class="max-w-full h-auto max-h-full">
-          
-          
+        <div class="hidden md:flex items-center justify-center p-4 md:p-8">
+          <img src="{{ asset('images/illustrations/university.svg') }}" alt="University Creation" class="max-w-full h-auto">
         </div>
       </div>
       
       <!-- Right side - form -->
-     <div class="w-full md:w-1/2 md:pl-6 lg:pl-12">
-        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+      <div class="w-full md:w-1/2 md:pl-6 lg:pl-12">
+        <div class="bg-white rounded-lg">
           <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Create a university</h2>
           <p class="text-gray-600 mb-6">Let's start by creating a university, enter its information below</p>
           
@@ -87,7 +83,7 @@
                 {{ form_widget(form.description, {
                   'attr': {
                     'class': 'appearance-none relative block w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-orange focus:border-custom-orange transition-all duration-200 ease-in-out',
-                    'rows': 6,
+                    'rows': 4,
                     'placeholder': 'Describe the university'
                   }
                 }) }}
@@ -95,7 +91,7 @@
               </div>
             </div>
             
-            <div class="flex flex-col sm:flex-row justify-between gap-4 mt-8">
+            <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
               <a href="{{ path('app_university_index') }}" class="order-2 sm:order-1 w-full sm:w-auto flex items-center justify-center px-4 py-2 border border-gray-300 rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-sm">
                 <svg class="mr-2 -ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -123,8 +119,6 @@
     {% endfor %}
   </div>
 </div>
-  </div>
-</div>
 
 <script>
 function previewImage(input) {
@@ -143,16 +137,4 @@ function previewImage(input) {
   }
 }
 </script>
-
-<style>
-@media (max-width: 768px) {
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  button[type="submit"] {
-    margin-top: 1.5rem;
-  }
-}
-</style>
 {% endblock %}

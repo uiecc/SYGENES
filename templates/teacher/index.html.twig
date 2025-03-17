@@ -1,57 +1,66 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Teacher index{% endblock %}
-
 {% block body %}
-    <h1>Teacher index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th>PhoneNumber</th>
-                <th>ProfilePhoto</th>
-                <th>Cni</th>
-                <th>FirstName</th>
-                <th>LastName</th>
-                <th>IsActive</th>
-                <th>CreatedAt</th>
-                <th>CodeResp</th>
-                <th>Function</th>
-                <th>Department</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for teacher in teachers %}
-            <tr>
-                <td>{{ teacher.id }}</td>
-                <td>{{ teacher.username }}</td>
-                <td>{{ teacher.password }}</td>
-                <td>{{ teacher.phoneNumber }}</td>
-                <td>{{ teacher.profilePhoto }}</td>
-                <td>{{ teacher.cni }}</td>
-                <td>{{ teacher.firstName }}</td>
-                <td>{{ teacher.lastName }}</td>
-                <td>{{ teacher.isActive ? 'Yes' : 'No' }}</td>
-                <td>{{ teacher.createdAt ? teacher.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ teacher.codeResp }}</td>
-                <td>{{ teacher.function }}</td>
-                <td>{{ teacher.department }}</td>
-                <td>
-                    <a href="{{ path('app_teacher_show', {'id': teacher.id}) }}">show</a>
-                    <a href="{{ path('app_teacher_edit', {'id': teacher.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="14">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_teacher_new') }}">Create new</a>
+    <div class="container mx-auto px-4 py-6 h-screen">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Teacher index</h1>
+            <div class="mt-3 md:mt-0">
+                <a href="{{ path('app_teacher_new') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-orange">
+                    Create new
+                </a>
+            </div>
+        </div>
+        
+        <div class="overflow-x-auto bg-white dark:bg-gray-800 shadow rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Id</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Username</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Password</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">PhoneNumber</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ProfilePhoto</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Cni</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">FirstName</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">LastName</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">IsActive</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">CreatedAt</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">CodeResp</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Function</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Department</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for teacher in teachers %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ teacher.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ teacher.username }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ teacher.password }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ teacher.phoneNumber }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ teacher.profilePhoto }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ teacher.cni }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ teacher.firstName }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ teacher.lastName }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ teacher.isActive ? 'Yes' : 'No' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ teacher.createdAt ? teacher.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ teacher.codeResp }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ teacher.function }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ teacher.department }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex space-x-2">
+                                <a href="{{ path('app_teacher_show', {'id': teacher.id}) }}" class="text-custom-orange hover:text-custom-orange/80 dark:text-custom-orange dark:hover:text-custom-orange/80">show</a>
+                                <a href="{{ path('app_teacher_edit', {'id': teacher.id}) }}" class="text-custom-orange hover:text-custom-orange/80 dark:text-custom-orange dark:hover:text-custom-orange/80">edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="14" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">no records found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

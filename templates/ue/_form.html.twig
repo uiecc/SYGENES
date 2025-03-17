@@ -1,52 +1,82 @@
 {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="mb-3">
-                {{ form_label(form.name) }}
-                {{ form_widget(form.name) }}
-                {{ form_errors(form.name) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form_label(form.code) }}
-                {{ form_widget(form.code) }}
-                {{ form_errors(form.code) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form_label(form.credit) }}
-                {{ form_widget(form.credit) }}
-                {{ form_errors(form.credit) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form_label(form.semester) }}
-                {{ form_widget(form.semester) }}
-                {{ form_errors(form.semester) }}
-                {% if form.semester.vars.choices is empty %}
-                    <div class="alert alert-warning mt-2">
-                        Aucun semestre disponible pour ce niveau. Veuillez d'abord créer des semestres.
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+        <div class="p-6">
+            <div class="mb-4">
+                {{ form_label(form.name, 'Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}}) }}
+                {{ form_widget(form.name, {'attr': {'class': 'appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-orange focus:border-custom-orange dark:bg-gray-700 dark:text-white'}}) }}
+                {% if form.name.vars.errors|length > 0 %}
+                    <div class="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {{ form_errors(form.name) }}
                     </div>
                 {% endif %}
             </div>
-
-            <div class="mb-3 form-check">
-                {{ form_widget(form.isCompulsory) }}
-                {{ form_label(form.isCompulsory) }}
-                {{ form_errors(form.isCompulsory) }}
+            
+            <div class="mb-4">
+                {{ form_label(form.code, 'Code', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}}) }}
+                {{ form_widget(form.code, {'attr': {'class': 'appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-orange focus:border-custom-orange dark:bg-gray-700 dark:text-white'}}) }}
+                {% if form.code.vars.errors|length > 0 %}
+                    <div class="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {{ form_errors(form.code) }}
+                    </div>
+                {% endif %}
             </div>
-
+            
+            <div class="mb-4">
+                {{ form_label(form.credit, 'Credit', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}}) }}
+                {{ form_widget(form.credit, {'attr': {'class': 'appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-orange focus:border-custom-orange dark:bg-gray-700 dark:text-white'}}) }}
+                {% if form.credit.vars.errors|length > 0 %}
+                    <div class="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {{ form_errors(form.credit) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                {{ form_label(form.semester, 'Semester', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}}) }}
+                {{ form_widget(form.semester, {'attr': {'class': 'appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-orange focus:border-custom-orange dark:bg-gray-700 dark:text-white'}}) }}
+                {% if form.semester.vars.errors|length > 0 %}
+                    <div class="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {{ form_errors(form.semester) }}
+                    </div>
+                {% endif %}
+                {% if form.semester.vars.choices is empty %}
+                    <div class="mt-2 p-3 bg-yellow-50 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-sm rounded-md">
+                        <div class="flex">
+                            <svg class="h-5 w-5 text-yellow-600 dark:text-yellow-400 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            <span>Aucun semestre disponible pour ce niveau. Veuillez d'abord créer des semestres.</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <div class="flex items-center">
+                    {{ form_widget(form.isCompulsory, {'attr': {'class': 'h-4 w-4 text-custom-orange focus:ring-custom-orange border-gray-300 rounded dark:border-gray-600 dark:bg-gray-700'}}) }}
+                    {{ form_label(form.isCompulsory, 'Is Compulsory', {'label_attr': {'class': 'ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300'}}) }}
+                </div>
+                {% if form.isCompulsory.vars.errors|length > 0 %}
+                    <div class="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {{ form_errors(form.isCompulsory) }}
+                    </div>
+                {% endif %}
+            </div>
+            
             {% if form.vars.valid == false and form.vars.submitted %}
-                <div class="alert alert-danger">
+                <div class="p-3 mb-4 bg-red-50 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-md">
                     {{ form_errors(form) }}
                 </div>
             {% endif %}
         </div>
-        <div class="card-footer">
-            <button type="submit" class="btn btn-primary">
+        
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex flex-col sm:flex-row gap-3">
+            <button type="submit" class="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-orange">
                 {{ button_label|default('Enregistrer') }}
             </button>
-            <a href="{{ path('app_u_e_index') }}" class="btn btn-secondary">Retour à la liste</a>
+            <a href="{{ path('app_u_e_index') }}" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md shadow-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                Retour à la liste
+            </a>
         </div>
     </div>
 {{ form_end(form) }}

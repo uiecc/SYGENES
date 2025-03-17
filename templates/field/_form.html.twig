@@ -1,4 +1,60 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|default('Ajouter une filière') }}{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <h1 class="mb-4">{{ title|default('Ajouter une filière') }}</h1>
+
+        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                <div class="p-6">
+                    <div class="mb-4">
+                        {{ form_label(form.name, 'Nom de la filière', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}}) }}
+                        {{ form_widget(form.name, {'attr': {'class': 'appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-orange focus:border-custom-orange dark:bg-gray-700 dark:text-white'}}) }}
+                        {% if form.name.vars.errors|length > 0 %}
+                            <div class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ form_errors(form.name) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        {{ form_label(form.code, 'Code de la filière', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}}) }}
+                        {{ form_widget(form.code, {'attr': {'class': 'appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-orange focus:border-custom-orange dark:bg-gray-700 dark:text-white'}}) }}
+                        {% if form.code.vars.errors|length > 0 %}
+                            <div class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ form_errors(form.code) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        {{ form_label(form.school, 'École', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}}) }}
+                        {{ form_widget(form.school, {'attr': {'class': 'appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-orange focus:border-custom-orange dark:bg-gray-700 dark:text-white'}}) }}
+                        {% if form.school.vars.errors|length > 0 %}
+                            <div class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ form_errors(form.school) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if form.vars.valid == false and form.vars.submitted %}
+                        <div class="p-3 mb-4 bg-red-50 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-md">
+                            {{ form_errors(form) }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex flex-col sm:flex-row gap-3">
+                    <button type="submit" class="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-orange">
+                        {{ button_label|default('Enregistrer') }}
+                    </button>
+                    <a href="{{ path('app_field_index') }}" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md shadow-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        Retour à la liste
+                    </a>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
