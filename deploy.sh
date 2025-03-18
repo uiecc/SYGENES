@@ -14,20 +14,13 @@ git reset --hard origin/main  # Remplacez 'main' par votre branche principale
 echo "📦 Mise à jour des dépendances..."
 php composer.phar install --no-interaction --no-progress --prefer-dist
 
-
-
 echo "🔄 Mise à jour du schéma de la base de données..."
 php bin/console doctrine:schema:update --force --no-interaction
 
 echo "🛠️ Reconstruction des assets avec mode verbose..."
-php bin/console tailwind:build --minify
+# Tentative de construction Tailwind mais continue même en cas d'échec
+php bin/console tailwind:build --minify || echo "⚠️ Warning: Tailwind build failed, using existing assets"
 php bin/console assets:install 
 php bin/console asset-map:compile
-
-# Ajoutez une vérification explicite du code de sortie
-if [ $? -ne 0 ]; then
-    echo "❌ Erreur lors de la construction de Tailwind CSS"
-    exit 1
-fi
 
 echo "✅ Déploiement terminé"

@@ -2,7 +2,6 @@
 /.env
 /.env.local
 /.env.dev
-/.env
 /.env.test
 /.env.local.php
 /.env.*.local
@@ -35,7 +34,6 @@ yarn-error.log
 
 ###> symfony/asset-mapper ###
 /public/assets/
-/public/build/
 /assets/vendor/
 ###< symfony/asset-mapper ###
 
@@ -68,7 +66,6 @@ Thumbs.db
 /composer.lock
 
 ###> Frontend Build Tools ###
-/public/build/
 /public/assets/
 /node_modules/
 /assets/vendor/
