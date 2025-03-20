@@ -80,7 +80,10 @@
 
 							{# Login Button #}
 							{% if app.user %}
-								<span class="text-white">{{ app.user.username }}</span>
+								{{ 'base_login.greetings'|trans }} <span class="text-custom-orange">{{ app.user.username }}</span>
+								<a href="{{ path('app_logout') }}" class="no-underline px-7 text-sm py-3 rounded-[39px] text-gray-800 dark:text-white border border-solid border-gray-300/60 hover:bg-custom-orange/20 duration-300 ease-in-out transition-colors">
+									{{ 'base_login.logout'|trans }}
+								</a>
 							{% else %}
 								<a href="{{ path('app_login') }}" class="no-underline px-7 text-sm py-3 rounded-[39px] text-gray-800 dark:text-white border border-solid border-gray-300/60 hover:bg-custom-orange/20 duration-300 ease-in-out transition-colors">
 									{{ 'base_login.login'|trans }}

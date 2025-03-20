@@ -1,20 +1,117 @@
 {% extends 'base_dashboard.html.twig' %}
 
-{% block title %}Hello AdminDashboardController!{% endblock %}
+{% block title %}Administration Dashboard{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/davy/SYGENES/src/Controller/AdminDashboardController.php</code></li>
-        <li>Your template at <code>/home/davy/SYGENES/templates/admin_dashboard/index.html.twig</code></li>
-    </ul>
+<div class="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+  <!-- Dashboard Header -->
+  <div class="mb-8">
+    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Dashboard Administrateur</h1>
+    <p class="mt-2 text-gray-600">Gérez les universités et les responsables du système</p>
+  </div>
+  
+  <!-- Quick Actions Section -->
+  <div class="mb-8">
+    <h2 class="text-lg font-medium text-gray-900 mb-4">Actions Rapides</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- Add University Card -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center justify-center h-12 w-12 rounded-full bg-custom-orange/10 mb-5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-custom-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Ajouter une école</h3>
+          <p class="text-sm text-gray-600 mb-5">Créez une nouvelle école dans le système</p>
+          <a href="{{ path('app_school_new') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-full text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-orange transition-all duration-200 ease-in-out shadow-sm hover:shadow-md">
+            <svg class="mr-2 -ml-1 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Ajouter une école
+          </a>
+        </div>
+      </div>
+      
+      <!-- Add School Manager Card -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+        <div class="p-6">
+          <div class="flex items-center justify-center h-12 w-12 rounded-full bg-custom-orange/10 mb-5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-custom-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Ajouter un Responsable</h3>
+          <p class="text-sm text-gray-600 mb-5">Créez un nouveau responsable pour gérer une école</p>
+          <a href="{{ path('app_school_manager_new') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-full text-white bg-custom-orange hover:bg-custom-orange/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-orange transition-all duration-200 ease-in-out shadow-sm hover:shadow-md">
+            <svg class="mr-2 -ml-1 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Ajouter un responsable d'école
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Summary Section -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <!-- Universities Summary -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 border border-gray-100">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Ecoles</h2>
+      <div class="flex items-center mb-4">
+        <div class="bg-custom-orange/10 rounded-full p-3 mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-custom-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Total des écoles</p>
+          <p class="text-2xl font-bold text-gray-900">{{ universities|default(0) }}</p>
+        </div>
+      </div>
+      <a href="{{ path('app_university_index') }}" class="text-custom-orange hover:text-custom-orange/80 text-sm font-medium inline-flex items-center">
+        Voir toutes les écoles
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+    
+    <!-- Administrators Summary -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 border border-gray-100">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Responsables</h2>
+      <div class="flex items-center mb-4">
+        <div class="bg-custom-orange/10 rounded-full p-3 mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-custom-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Total des responsables</p>
+          <p class="text-2xl font-bold text-gray-900">{{ administrators|default(0) }}</p>
+        </div>
+      </div>
+      <a href="{{ path('app_administrator_index') }}" class="text-custom-orange hover:text-custom-orange/80 text-sm font-medium inline-flex items-center">
+        Voir tous les responsables
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Recent Activity Section (Optional) -->
+  <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 border border-gray-100">
+    <h2 class="text-lg font-medium text-gray-900 mb-4">Activité Récente</h2>
+    <div class="text-center py-8 text-gray-500">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p>Aucune activité récente à afficher</p>
+      <p class="text-sm mt-2">Les activités récentes apparaîtront ici</p>
+    </div>
+  </div>
 </div>
 {% endblock %}

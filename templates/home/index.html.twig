@@ -1,4 +1,6 @@
+
 {% extends 'base.html.twig' %}
+
 
 {% block title %}
 	{{ 'home_page.title'|trans }}
@@ -60,7 +62,7 @@
 				<p class="max-w-lg text-sm sm:text-md text-gray-600 dark:text-gray-300 mb-6 md:mb-8">
 					{{ 'home_page.description'|trans }}
 				</p>
-				<a href="#" class="px-6 sm:px-8 py-2 sm:py-3 rounded-full bg-custom-orange text-white font-medium hover:bg-opacity-90 transition-colors duration-300">
+				<a href="{{ path('app_university_new') }}"	 class="px-6 sm:px-8 py-2 sm:py-3 rounded-full bg-custom-orange text-white font-medium hover:bg-opacity-90 transition-colors duration-300">
 					{{ 'home_page.cta'|trans }}
 				</a>
 			</div>

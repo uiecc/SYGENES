@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Administrator;
+use App\Entity\Role;
 use App\Form\AdministratorType;
 use App\Repository\AdministratorRepository;
 use App\Service\FileUploader;
@@ -38,32 +39,45 @@ class AdministratorController extends AbstractController
         $administrator = new Administrator();
         $form = $this->createForm(AdministratorType::class, $administrator);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var FileUploader $profilePhoto */
             if ($profilePhoto = $form->get('profilePhoto')->getData()) {
                 $fileName = $fileUploader->upload($profilePhoto);
                 $administrator->setProfilePhoto($fileName);
-            }    
+            }
             // Hash le mot de passe
             $hashedPassword = $passwordHasher->hashPassword(
                 $administrator,
                 $administrator->getPassword()
             );
             $administrator->setPassword($hashedPassword);
-    
+
+            // Ajout du rôle spécifique
+            $roleManager = $entityManager
+                ->getRepository(Role::class)
+                ->findOneBy(['name' => 'ROLE_ADMIN']);
+
+            if (!$roleManager) {
+                $roleManager = new Role();
+                $roleManager->setName('ROLE_ADMIN');
+                $entityManager->persist($roleManager);
+            }
+            $administrator->addUserRole($roleManager);
+
+
             $entityManager->persist($administrator);
             $entityManager->flush();
-    
-            return $this->redirectToRoute('app_administrator_index');
+
+            return $this->redirectToRoute('app_school_new');
         }
-    
+
         return $this->render('administrator/new.html.twig', [
             'administrator' => $administrator,
             'form' => $form,
         ]);
     }
-    
+
     #[Route('/{id}', name: 'app_administrator_show', methods: ['GET'])]
     public function show(Administrator $administrator): Response
     {

@@ -1,256 +1,283 @@
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}" class="h-full bg-gray-100">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Dashboard{% endblock %}</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-  {% block stylesheets %}
-    {{ encore_entry_link_tags('app') }}
-  {% endblock %}
-  {% block javascripts %}
-    {{ encore_entry_script_tags('app') }}
-    {% block importmap %}{{ importmap('app') }}{% endblock %}
-  {% endblock %}
-</head>
-<body class="h-full">
-  <div class="flex h-screen bg-gray-100">
-    <!-- Sidebar - Hidden on mobile by default, toggleable -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out bg-white shadow-lg overflow-y-auto lg:static lg:h-screen">
-      <div class="flex flex-col h-full">
-        <!-- Logo -->
-        <div class="px-4 py-6 flex items-center border-b border-gray-200">
-          <div class="flex-shrink-0">
-            <img src="/images/logo.svg" alt="Logo" class="h-8 w-8">
-          </div>
-          <span class="ml-3 text-xl font-bold text-gray-800">SYGENES</span>
-        </div>
-        
-        <!-- Navigation -->
-        <div class="flex-1 py-4 overflow-y-auto">
-          <div class="px-4 mb-4">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">GENERAL</p>
-          </div>
-          <nav class="px-2 space-y-1">
-            <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-orange-500 text-white">
-              <svg class="mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              Home
-            </a>
-            
-            <div class="border-t border-gray-200 my-2"></div>
-            
-            <div class="group">
-              <a href="#" class="flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-                <div class="flex items-center">
-                  <svg class="mr-3 h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                  Users
-                </div>
-                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-              </a>
-              <div class="pl-10 space-y-1">
-                <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100">Other actions</a>
-                <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100">Other actions</a>
-                <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100">Other actions</a>
-              </div>
-            </div>
-            
-            <div class="group">
-              <a href="#" class="flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-                <div class="flex items-center">
-                  <svg class="mr-3 h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                  Statistics
-                </div>
-                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-              </a>
-            </div>
-          </nav>
-          
-          <div class="px-4 mt-8 mb-4">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">QUICK ACTIONS</p>
-          </div>
-          
-          <nav class="px-2 space-y-1">
-            <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-              <div class="mr-3 flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-red-100 text-red-500">
-                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              Delete a manager
-            </a>
-            
-            <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-              <div class="mr-3 flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-green-100 text-green-500">
-                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              Add a manager
-            </a>
-            
-            <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-              <div class="mr-3 flex-shrink-0 h-6 w-6 flex items-center justify-center">
-                <svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                </svg>
-              </div>
-              Import Students
-            </a>
-            
-            <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-              <div class="mr-3 flex-shrink-0 h-6 w-6 flex items-center justify-center">
-                <svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              Export summary
-            </a>
-          </nav>
-        </div>
-        
-        <!-- Bottom section -->
-        <div class="p-4 border-t border-gray-200">
-          <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-            <svg class="mr-3 h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            Settings
-          </a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col lg:pl-64">
-      <!-- Top Navigation -->
-      <div class="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow">
-        <!-- Mobile menu button -->
-        <button id="sidebar-toggle" type="button" class="lg:hidden px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600">
-          <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-          </svg>
-        </button>
-        
-        <div class="flex-1 px-4 flex justify-between">
-          <div class="flex-1 flex items-center">
-            <!-- Calendar icon and date -->
-            <div class="flex items-center">
-              <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <span class="ml-2 text-sm text-gray-600">{{ "now"|date("l, d F Y") }}</span>
-            </div>
-          </div>
-          
-          <div class="ml-4 flex items-center md:ml-6">
-            <!-- Search button -->
-            <button class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500">
-              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-            
-            <!-- Language switcher -->
-            <div class="ml-3 flex border-l border-gray-200 pl-3">
-              <a href="{{ path(app.request.get('_route'), {_locale: 'fr'}) }}" class="px-1 text-sm font-medium {{ app.request.locale == 'fr' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700' }}">FR</a>
-              <span class="mx-1 text-gray-300">|</span>
-              <a href="{{ path(app.request.get('_route'), {_locale: 'en'}) }}" class="px-1 text-sm font-medium {{ app.request.locale == 'en' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700' }}">EN</a>
-            </div>
-            
-            <!-- Theme toggle -->
-            <button class="ml-3 p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500">
-              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-              </svg>
-            </button>
-            
-            <!-- Notifications -->
-            <button class="ml-3 p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500">
-              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </button>
-            
-            <!-- Profile dropdown -->
-            <div class="ml-3 relative">
-              <div class="flex items-center">
-                <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-700">
-                  {{ app.user ? app.user.username|upper : 'G' }}
-                </div>
-                <span class="ml-2 text-sm font-medium text-gray-700">
-                  {{ app.user ? app.user.username : 'Guest' }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Welcome Header -->
-      <header class="bg-white shadow-sm">
-        <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <h1 class="text-3xl font-bold text-gray-900">
-            <span class="text-gray-500">Good Morning,</span> {{ app.user ? app.user.username : 'Guest' }}
-          </h1>
-          
-          <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            <svg class="mr-2 -ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-            </svg>
-            Ask AI
-          </button>
-        </div>
-      </header>
-      
-      <!-- Main Content Area -->
-      <main class="flex-1 overflow-y-auto">
-        <div class="py-6">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <!-- Grid items would go here - placeholder for now -->
-              {% block body %}
-              <!-- This is where page-specific content would go -->
-              {% endblock %}
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  </div>
-  
-  <!-- JavaScript for sidebar toggle -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const sidebar = document.getElementById('sidebar');
-      const sidebarToggle = document.getElementById('sidebar-toggle');
-      
-      if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function() {
-          sidebar.classList.toggle('-translate-x-full');
-        });
-      }
-      
-      // Close sidebar when clicking outside on mobile
-      document.addEventListener('click', function(event) {
-        const isClickInsideSidebar = sidebar.contains(event.target);
-        const isClickOnToggle = sidebarToggle.contains(event.target);
-        
-        if (!isClickInsideSidebar && !isClickOnToggle && window.innerWidth < 1024) {
-          sidebar.classList.add('-translate-x-full');
-        }
-      });
-    });
-  </script>
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>
+			{% block title %}Dashboard
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
+		{% endblock %}
+	</head>
+	<body class="h-full">
+		<div
+			class="flex h-screen bg-gray-100">
+			<!-- Sidebar - Hidden on mobile by default, toggleable -->
+			<div id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out bg-white shadow-lg overflow-y-auto lg:static lg:h-screen">
+				<div
+					class="flex flex-col h-full">
+					<!-- Logo -->
+					<div class="px-4 py-6 flex items-center border-b border-gray-200">
+						<div class="flex-shrink-0">
+							<img src="{{ asset('icons/uiecc_logo_1.svg') }}" alt="Logo" class="h-8 w-8">
+						</div>
+						<span class="ml-3 text-xl font-bold text-gray-800">SYGENES</span>
+					</div>
+
+					<!-- Navigation -->
+					<div class="flex-1 py-4 overflow-y-auto">
+						<div class="px-4 mb-4">
+							<p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">GENERAL</p>
+						</div>
+						<nav class="px-2 space-y-1">
+							<a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-orange-500 text-white">
+								<svg class="mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+								</svg>
+								Home
+							</a>
+
+							<div class="border-t border-gray-200 my-2"></div>
+
+							<div class="group">
+								<a href="#" class="flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+									<div class="flex items-center">
+										<svg class="mr-3 h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+										</svg>
+										Users
+									</div>
+									<svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor">
+										<path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+									</svg>
+								</a>
+								<div class="pl-10 space-y-1">
+									<a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100">Other actions</a>
+									<a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100">Other actions</a>
+									<a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100">Other actions</a>
+								</div>
+							</div>
+
+							<div class="group">
+								<a href="#" class="flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+									<div class="flex items-center">
+										<svg class="mr-3 h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+										</svg>
+										Statistics
+									</div>
+									<svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor">
+										<path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+									</svg>
+								</a>
+							</div>
+						</nav>
+
+						<div class="px-4 mt-8 mb-4">
+							<p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">QUICK ACTIONS</p>
+						</div>
+
+						<nav class="px-2 space-y-1">
+							<a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+								<div class="mr-3 flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-red-100 text-red-500">
+									<svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor">
+										<path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+									</svg>
+								</div>
+								Delete a manager
+							</a>
+
+							<a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+								<div class="mr-3 flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-green-100 text-green-500">
+									<svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor">
+										<path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+									</svg>
+								</div>
+								Add a manager
+							</a>
+
+							<a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+								<div class="mr-3 flex-shrink-0 h-6 w-6 flex items-center justify-center">
+									<svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor">
+										<path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"/>
+									</svg>
+								</div>
+								Import Students
+							</a>
+
+							<a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+								<div class="mr-3 flex-shrink-0 h-6 w-6 flex items-center justify-center">
+									<svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor">
+										<path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+									</svg>
+								</div>
+								Export summary
+							</a>
+						</nav>
+					</div>
+
+					<!-- Bottom section -->
+					<div class="p-4 border-t border-gray-200">
+						<a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+							<svg class="mr-3 h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+							</svg>
+							Settings
+						</a>
+
+						{% if app.user %}
+							<a href="{{ path('app_logout') }}" class="group flex items-center px-3 py-2 mt-2 text-sm font-medium rounded-md text-red-600 hover:bg-red-50 hover:text-red-700">
+								<svg class="mr-3 h-6 w-6 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+								</svg>
+								{{ 'base_login.logout'|trans|default('Logout') }}
+							</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<!-- Main Content -->
+			<div
+				class="flex-1 flex flex-col ">
+				<!-- Top Navigation -->
+				<div
+					class="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow">
+					<!-- Mobile menu button -->
+					<button id="sidebar-toggle" type="button" class="lg:hidden px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600">
+						<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+						</svg>
+					</button>
+
+					<div class="flex-1 px-4 flex justify-between">
+						<div
+							class="flex-1 flex items-center">
+							<!-- Calendar icon and date -->
+							<div class="flex items-center">
+								<svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+								</svg>
+								<span class="ml-2 text-sm text-gray-600">{{ "now"|date("l, d F Y") }}</span>
+							</div>
+						</div>
+
+						<div
+							class="ml-4 flex items-center md:ml-6">
+							<!-- Search button -->
+							<button class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500">
+								<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+								</svg>
+							</button>
+
+							<!-- Language switcher -->
+							<div class="ml-3 flex border-l border-gray-200 pl-3">
+								<a href="{{ path(app.request.get('_route'), {_locale: 'fr'}) }}" class="px-1 text-sm font-medium {{ app.request.locale == 'fr' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700' }}">FR</a>
+								<span class="mx-1 text-gray-300">|</span>
+								<a href="{{ path(app.request.get('_route'), {_locale: 'en'}) }}" class="px-1 text-sm font-medium {{ app.request.locale == 'en' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700' }}">EN</a>
+							</div>
+
+							<!-- Theme toggle -->
+							<button class="ml-3 p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500">
+								<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+								</svg>
+							</button>
+
+							<!-- Notifications -->
+							<button class="ml-3 p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500">
+								<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+								</svg>
+							</button>
+
+							<!-- Profile dropdown -->
+							<div class="ml-3 relative">
+								<div class="flex items-center">
+									<div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-700">
+										{{ app.user ? app.user.username|upper|slice(0, 1) : 'G' }}
+									</div>
+									<div class="ml-2">
+										<span class="text-sm font-medium text-gray-700">
+											{{ app.user ? app.user.username : 'Guest' }}
+										</span>
+										{% if app.user %}
+											<a href="{{ path('app_logout') }}" class="block text-xs text-custom-orange hover:text-custom-orange/80 transition-colors duration-150 ease-in-out">
+												{{ 'base_login.logout'|trans|default('Logout') }}
+											</a>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Welcome Header -->
+				<header class="bg-white shadow-sm">
+					<div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+						<h1 class="text-3xl font-bold text-gray-900">
+							<span class="text-gray-500">Good Morning,</span>
+							{{ app.user ? app.user.username : 'Guest' }}
+						</h1>
+
+						<button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+							<svg class="mr-2 -ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor">
+								<path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+							</svg>
+							Ask AI
+						</button>
+					</div>
+				</header>
+
+				<!-- Main Content Area -->
+				<main class="flex-1 overflow-y-auto">
+					<div class="py-6">
+						<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+							{# <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"> #}
+							<!-- Grid items would go here - placeholder for now -->{% block body %}
+								<!-- This is where page-specific content would go -->
+							{% endblock %}
+							{# </div> #}
+						</div>
+					</div>
+				</main>
+			</div>
+		</div>
+
+		<!-- JavaScript for sidebar toggle -->
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebar-toggle');
+
+if (sidebarToggle) {
+sidebarToggle.addEventListener('click', function () {
+sidebar.classList.toggle('-translate-x-full');
+});
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function (event) {
+const isClickInsideSidebar = sidebar.contains(event.target);
+const isClickOnToggle = sidebarToggle.contains(event.target);
+
+if (! isClickInsideSidebar && ! isClickOnToggle && window.innerWidth < 1024) {
+sidebar.classList.add('-translate-x-full');
+}
+});
+});
+		</script>
+	</body>
 </html>

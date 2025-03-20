@@ -33,7 +33,7 @@ final class SchoolController extends AbstractController
             $entityManager->persist($school);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_school_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_school_manager_new', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('school/new.html.twig', [

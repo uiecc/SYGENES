@@ -15,6 +15,28 @@ base_login:
     documentation: 'Documentation'
     blog: 'Blog'
     title: 'Welcome'
+    logout: 'Logout'
+    greetings: 'Hello'
+    # Secretariat academique, Codes en majuscules, voir le total credit, il signature Signature de l'etudiant,  chef d'equipe pedagogique, SA
+    # Responsable Academque, Responsable des filere, Coordonateur
+    # PV is the complete data of the Report Card plus, tirer en grades, et cest apres les deliberation que la colonne d'appreciation sort
+    # Pv du semester et la liste des gens qui partent au rattrapage
+    # le rattrapage prends en entree la liste des rattrapages et le pv definitif, et sortir le pv de l'annee sur formes de grades
+    # Deliberation pour savoir qui passe en classe superieur et qui redouble et son grade final et admis refuse, 
+    # Le pv doit avoir les footer, annee, semestre, pour les test unitairees utiliser les vrai codes et les vrai ues
+    # pour chaque promotion il doit avoir une table separee, 
+    # Notes profil ( info + notes )
+    #
+
+    # Processus de demmarage du Data Center
+    # Processus de demmarage du groupe electrogene
+    # Processus de surveillance video
+    # Processus de gestion de la visio conference
+    # Processus d'enregistrement des cours dans la salle studio
+    # Processus d'enregistrement et de diffusion des cours(salle des cours)
+    # Processus de nettoyage
+    # Processus de la maintenance des equipements
+    # Processus de 
 
     footer:
         about: 'About Us'
