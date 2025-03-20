@@ -33,7 +33,7 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
 ###> symfony/asset-mapper ###
-/public/assets/
+# /public/assets/ - Commenté pour permettre le versionnement des assets
 /assets/vendor/
 ###< symfony/asset-mapper ###
 
@@ -66,12 +66,16 @@ Thumbs.db
 /composer.lock
 
 ###> Frontend Build Tools ###
-/public/assets/
+# /public/assets/ - Commenté pour permettre le versionnement des assets
 /node_modules/
 /assets/vendor/
 npm-debug.log
 yarn-debug.log
 yarn-error.log
+
+# Autoriser explicitement les fichiers de build
+!/public/build/
+!/public/assets/
 
 ###> Logs and Caches ###
 /var/cache/*
