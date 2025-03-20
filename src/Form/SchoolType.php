@@ -19,7 +19,7 @@ class SchoolType extends AbstractType
             ->add('code')
             ->add('university', EntityType::class, [
                 'class' => University::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
             ->add('logo', FileType::class)
 

@@ -2,8 +2,9 @@
 {# {% block title %}{{ title|default('Ajouter une école') }}{% endblock %} #}
 
 {% block body %}
-    <div class="container py-4">
-        {# <h1 class="mb-4">{{ title|default('Ajouter une école') }}</h1> #}
+
+        <h1 class="mb-4 text-4xl font-semibold">{{ title|default('Ajouter une école') }}</h1>
+        <p class="mb-4 text-lg text-gray-600 dark:text-gray-400">Veuillez remplir les informations ci-dessous pour ajouter une nouvelle école.</p>
 
         {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
