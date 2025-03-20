@@ -24,7 +24,9 @@ class AdministratorType extends AbstractType
             ->add('username', TextType::class, [
                 'label' => 'Nom d\'utilisateur'
             ])
-            ->add('email', EmailType::class)
+            ->add('email', EmailType::class,[
+                'label' => 'Email'
+            ])
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe'
             ])
