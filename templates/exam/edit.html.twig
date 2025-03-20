@@ -1,0 +1,71 @@
+{# new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if exam is defined %}Modifier{% else %}Créer{% endif %} un examen{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">
+        {% if exam is defined %}Modifier{% else %}Créer{% endif %} un examen
+    </h1>
+    
+    <div class="bg-white shadow-md rounded-lg overflow-hidden p-6">
+        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    {{ form_label(form.ec, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.ec, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.ec, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="space-y-2">
+                    {{ form_label(form.examDate, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.examDate, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.examDate, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="space-y-2">
+                    {{ form_label(form.type, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.type, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.type, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="space-y-2">
+                    {{ form_label(form.status, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.status, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.status, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="space-y-2">
+                    {{ form_label(form.weight, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.weight, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.weight, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="space-y-2">
+                    {{ form_label(form.academicYear, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.academicYear, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.academicYear, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                {% if form.originalExam is defined %}
+                <div class="md:col-span-2 space-y-2">
+                    {{ form_label(form.originalExam, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.originalExam, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.originalExam, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="flex justify-between pt-6">
+                <a href="{{ path('app_exam_index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    Retour à la liste
+                </a>
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    {% if exam is defined %}Enregistrer{% else %}Créer{% endif %}
+                </button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

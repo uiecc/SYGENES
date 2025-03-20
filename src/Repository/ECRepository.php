@@ -193,4 +193,24 @@ class ECRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+
+        /**
+     * Trouve tous les ECs associés à un niveau spécifique.
+     * 
+     * @param Level $level Le niveau pour lequel on recherche les ECs
+     * @return array<int, EC> Les ECs associés au niveau
+     */
+    public function findByLevel(Level $level): array
+    {
+        return $this->createQueryBuilder('e')
+            ->join('e.ue', 'ue')
+            ->join('ue.semester', 's')
+            ->join('s.level', 'l')
+            ->andWhere('l.id = :levelId')
+            ->setParameter('levelId', $level->getId())
+            ->orderBy('e.code', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des codes anonymes - {{ exam.ec.code }} - Correcteurs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 18px;
+            text-align: center;
+            margin: 0 0 20px;
+            font-weight: bold;
+        }
+        h2 {
+            font-size: 16px;
+            margin: 0 0 15px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .info {
+            margin-bottom: 20px;
+        }
+        .info p {
+            margin: 4px 0;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste des codes anonymes - CORRECTEURS</h1>
+    
+    <div class="info">
+        <p><strong>EC:</strong> {{ exam.ec.code }} - {{ exam.ec.name }}</p>
+        <p><strong>Date d'examen:</strong> {{ exam.examDate|date('d/m/Y H:i') }}</p>
+        <p><strong>Type:</strong> {{ exam.type == 'NORMAL' ? 'Normal' : 'Rattrapage' }}</p>
+        <p><strong>Nombre total de codes:</strong> {{ anonymousCodes|length }}</p>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th width="10%">N°</th>
+                <th width="30%">Code Anonyme</th>
+                <th width="60%">Note (/20)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for code in anonymousCodes %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ code.code }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="footer">
+        <p>Document généré le {{ "now"|date('d/m/Y à H:i') }}</p>
+        <p>Merci de remplir les notes et de remettre ce document au responsable de niveau.</p>
+    </div>
+</body>
+</html>

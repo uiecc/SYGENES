@@ -1,0 +1,241 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Saisie des notes d'examen - {{ exam.ec.name }}{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-2">Saisie des notes d'examen</h1>
+    <h2 class="text-lg text-gray-600 mb-6">{{ exam.ec.code }} - {{ exam.ec.name }}</h2>
+    
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ message }}
+        </div>
+    {% endfor %}
+    
+    <div class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
+        <div class="bg-gray-50 px-6 py-4 border-b">
+            <h3 class="font-semibold">Informations sur l'examen</h3>
+        </div>
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm text-gray-600"><span class="font-medium">EC:</span> {{ exam.ec.code }} - {{ exam.ec.name }}</p>
+                <p class="text-sm text-gray-600"><span class="font-medium">UE:</span> {{ exam.ec.ue.code }} - {{ exam.ec.ue.name }}</p>
+                <p class="text-sm text-gray-600"><span class="font-medium">Date:</span> {{ exam.examDate|date('d/m/Y H:i') }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600"><span class="font-medium">Type:</span> 
+                    {% if exam.type == 'NORMAL' %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Normal</span>
+                    {% else %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">Rattrapage</span>
+                    {% endif %}
+                </p>
+                <p class="text-sm text-gray-600"><span class="font-medium">Statut:</span> 
+                    {% if exam.status == 'PLANNED' %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Planifié</span>
+                    {% elseif exam.status == 'IN_PROGRESS' %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">En cours</span>
+                    {% elseif exam.status == 'COMPLETED' %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Terminé</span>
+                    {% elseif exam.status == 'GRADED' %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Corrigé</span>
+                    {% endif %}
+                </p>
+                <p class="text-sm text-gray-600"><span class="font-medium">Coefficient:</span> {{ exam.weight }}</p>
+            </div>
+        </div>
+    </div>
+    
+    {# Calculer le nombre total de pages #}
+    {% set itemsPerPage = 50 %}
+    {% set totalItems = anonymousCodes|length %}
+    {% set totalPages = (totalItems / itemsPerPage)|round(0, 'ceil') %}
+    {% set currentPage = app.request.query.get('page', 1) %}
+    
+    <form method="post" id="gradeForm">
+        <input type="hidden" name="page" value="{{ currentPage }}">
+        
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+                <h3 class="font-semibold">Saisie des notes (système anonyme)</h3>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-500">Page {{ currentPage }} sur {{ totalPages }}</span>
+                    <span class="text-sm text-gray-500">Total: {{ totalItems }} étudiants</span>
+                    <span class="text-sm text-blue-600">Vous pouvez sauvegarder à tout moment</span>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <div class="mb-4 text-sm text-amber-700 bg-amber-50 p-4 rounded-md flex justify-between items-center">
+                    <div>
+                        <p class="font-medium">Important:</p>
+                        <p>Les notes sont saisies en respectant l'anonymat des étudiants. Vous pouvez sauvegarder partiellement et revenir plus tard.</p>
+                    </div>
+                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-amber-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        Sauvegarder
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N°</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code Anonyme</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note (/20)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commentaire (optionnel)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {# Calculer l'index de début et de fin pour la pagination #}
+                            {% set startIndex = (currentPage - 1) * itemsPerPage %}
+                            {% set endIndex = startIndex + itemsPerPage - 1 %}
+                            
+                            {% for i in startIndex..endIndex %}
+                                {% if anonymousCodes[i] is defined %}
+                                    {% set code = anonymousCodes[i] %}
+                                    {% set existingGrade = existingGrades[code.id] is defined ? existingGrades[code.id] : null %}
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ i + 1 }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ code.code }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="number" name="grade[{{ code.id }}]" value="{{ existingGrade ? existingGrade.grade : '' }}" min="0" max="20" step="0.25" class="mt-1 block w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="text" name="comment[{{ code.id }}]" value="{{ existingGrade ? existingGrade.comment : '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {# Pagination #}
+                {% if totalPages > 1 %}
+                    <div class="mt-6 flex justify-center">
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            {# Bouton précédent #}
+                            {% if currentPage > 1 %}
+                                <a href="{{ path('app_exam_grade_enter', {'id': exam.id, 'page': currentPage - 1}) }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Précédent</span>
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            {% else %}
+                                <span class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400">
+                                    <span class="sr-only">Précédent</span>
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            {% endif %}
+                            
+                            {# Numéros de page #}
+                            {% for i in 1..totalPages %}
+                                {% if i == currentPage %}
+                                    <span class="relative inline-flex items-center px-4 py-2 border border-indigo-500 bg-indigo-50 text-sm font-medium text-indigo-600">
+                                        {{ i }}
+                                    </span>
+                                {% else %}
+                                    <a href="{{ path('app_exam_grade_enter', {'id': exam.id, 'page': i}) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        {{ i }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {# Bouton suivant #}
+                            {% if currentPage < totalPages %}
+                                <a href="{{ path('app_exam_grade_enter', {'id': exam.id, 'page': currentPage + 1}) }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Suivant</span>
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            {% else %}
+                                <span class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400">
+                                    <span class="sr-only">Suivant</span>
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            {% endif %}
+                        </nav>
+                    </div>
+                {% endif %}
+                
+                <div class="mt-6 flex justify-between">
+                    <a href="{{ path('app_exam_index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        Retour à la liste
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        Enregistrer les notes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('gradeForm');
+        
+        // Fonction pour sauvegarder automatiquement toutes les 2 minutes
+        function setupAutoSave() {
+            setInterval(function() {
+                const hasChanges = checkForChanges();
+                if (hasChanges) {
+                    saveForm();
+                }
+            }, 120000); // 2 minutes
+        }
+        
+        // Vérifier s'il y a des changements non sauvegardés
+        function checkForChanges() {
+            // Implémentation à faire si besoin
+            return true;
+        }
+        
+        // Sauvegarder le formulaire via AJAX
+        function saveForm() {
+            const formData = new FormData(form);
+            formData.append('auto_save', '1');
+            
+            // Notification de sauvegarde
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded';
+            notification.innerHTML = 'Sauvegarde automatique en cours...';
+            document.body.appendChild(notification);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                notification.innerHTML = data.success ? 'Sauvegarde automatique réussie' : 'Échec de la sauvegarde automatique';
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            })
+            .catch(error => {
+                notification.innerHTML = 'Erreur lors de la sauvegarde';
+                notification.className = 'fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded';
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            });
+        }
+        
+        // Activer la sauvegarde automatique
+        setupAutoSave();
+    });
+    </script>
+</div>
+{% endblock %}
