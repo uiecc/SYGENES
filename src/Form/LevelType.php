@@ -18,7 +18,7 @@ class LevelType extends AbstractType
             ->add('code')
             ->add('field', EntityType::class, [
                 'class' => Field::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
         ;
     }

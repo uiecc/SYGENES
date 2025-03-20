@@ -1,5 +1,12 @@
 {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+     <a href="javascript:history.back()" class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-custom-orange transition-all duration-200 ease-in-out shadow-sm">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      <span class="sr-only">Retour</span>
+    </a>
+    <h1 class=" ml-4 font-semibold text-4xl"> Creer une UE<h1>
         <div class="p-6">
             <div class="mb-4">
                 {{ form_label(form.name, 'Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}}) }}

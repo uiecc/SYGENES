@@ -18,7 +18,7 @@ final class UEManagerController extends AbstractController
     public function index(UEManagerRepository $uEManagerRepository): Response
     {
         return $this->render('ue_manager/index.html.twig', [
-            'u_e_managers' => $uEManagerRepository->findAll(),
+            'ue_managers' => $uEManagerRepository->findAll(),
         ]);
     }
 

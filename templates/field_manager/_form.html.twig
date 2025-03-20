@@ -20,14 +20,14 @@
       <!-- Right side - form -->
       <div class="w-full md:w-1/2 md:pl-6 lg:pl-12">
         <div class="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
-          <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Register Field Manager</h2>
-          <p class="text-gray-600 mb-6">Fill in the details to register a new field manager</p>
-          
-          {{ form_start(form, {'attr': {'class': 'space-y-5'}}) }}
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Ajouter un Responsable de Filiere</h2>
+            <p class="text-gray-600 mb-6">Remplissez les détails pour enregistrer un nouveau responsable de filiere</p>
+            
+            {{ form_start(form, {'attr': {'class': 'space-y-5'}}) }}
             <div class="space-y-4">
-              <!-- Personal Information -->
+              <!-- Informations Personnelles -->
               <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-4">
-                <h3 class="font-medium text-gray-800">Personal Information</h3>
+              <h3 class="font-medium text-gray-800">Informations Personnelles</h3>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="form-group">
@@ -91,7 +91,7 @@
               
               <!-- Account Information -->
               <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-4">
-                <h3 class="font-medium text-gray-800">Account Information</h3>
+                <h3 class="font-medium text-gray-800">Informations du Compte</h3>
                 
                 <div class="form-group">
                   <label for="{{ form.username.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.username.vars.label }}</label>
@@ -129,7 +129,7 @@
               
               <!-- Additional Information -->
               <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-4">
-                <h3 class="font-medium text-gray-800">Additional Information</h3>
+                <h3 class="font-medium text-gray-800">Information additionelles</h3>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="form-group">
@@ -168,7 +168,7 @@
               
               <!-- Field Assignment -->
               <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-4">
-                <h3 class="font-medium text-gray-800">Field Assignment</h3>
+                <h3 class="font-medium text-gray-800">Affectation de Filière</h3>
                 
                 <div class="form-group">
                   <label for="{{ form.field.vars.id }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.field.vars.label }}</label>

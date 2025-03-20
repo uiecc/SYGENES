@@ -7,6 +7,7 @@ use App\Entity\LevelManager;
 use App\Form\UEType;
 use App\Repository\UERepository;
 use App\Repository\SemesterRepository;
+use App\Repository\UEManagerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class UEController extends AbstractController
 {
     #[Route(name: 'app_u_e_index', methods: ['GET'])]
-    public function index(UERepository $uERepository, SemesterRepository $semesterRepository): Response
+    public function index(UERepository $uERepository, SemesterRepository $semesterRepository, UEManagerRepository $uEManagerRepository): Response
     {
         /** @var LevelManager $levelManager */
         $levelManager = $this->getUser();
@@ -39,6 +40,7 @@ final class UEController extends AbstractController
         return $this->render('ue/index.html.twig', [
             'u_es' => $ues,
             'level' => $level,
+            'ue_managers' => $uEManagerRepository->findAll(),
         ]);
     }
 
