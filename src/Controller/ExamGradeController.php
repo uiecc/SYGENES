@@ -2,11 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\AcademicYear;
 use App\Entity\AnonymousCode;
 use App\Entity\Exam;
 use App\Entity\ExamGrade;
+use App\Entity\Semester;
+use App\Entity\Student;
+use App\Repository\AcademicYearRepository;
 use App\Repository\AnonymousCodeRepository;
 use App\Repository\ExamGradeRepository;
+use App\Repository\ExamRepository;
+use App\Repository\SemesterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,7 +76,7 @@ class ExamGradeController extends AbstractController
                         $grade->setCreatedAt(new \DateTimeImmutable());
                     }
                     
-                    $grade->setUpdatedAt(new \DateTime());
+                    $grade->setUpdatedAt(new \DateTimeImmutable());
                     
                     $entityManager->persist($grade);
                     $existingGrades[$codeId] = $grade;
@@ -105,8 +111,6 @@ class ExamGradeController extends AbstractController
             'existingGrades' => $existingGrades,
         ]);
     }
-    
-    // Les autres méthodes restent inchangées
     
     #[Route('/view-results/{id}', name: 'app_exam_grade_view_results')]
     public function viewResults(Exam $exam, ExamGradeRepository $examGradeRepository, AnonymousCodeRepository $anonymousCodeRepository): Response
@@ -144,22 +148,29 @@ class ExamGradeController extends AbstractController
         // Récupérer tous les résultats avec les noms des étudiants
         $results = $examGradeRepository->findCompleteResultsByExam($exam);
         
+        // Récupérer les statistiques de l'examen
+        $statistics = $examGradeRepository->getExamStatistics($exam);
+        
         // Générer le PDF
         $html = $this->renderView('exam_grade/pv.html.twig', [
             'exam' => $exam,
             'results' => $results,
             'level' => $level,
+            'statistics' => $statistics,
+            'generatedDate' => new \DateTime(),
         ]);
         
         $options = new Options();
         $options->set('defaultFont', 'Arial');
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
         
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
         
-        $filename = 'pv_examen_' . $exam->getEc()->getCode() . '.pdf';
+        $filename = 'pv_examen_' . $exam->getEc()->getCode() . '_' . date('Y-m-d') . '.pdf';
         
         return new Response(
             $dompdf->output(),
@@ -170,4 +181,122 @@ class ExamGradeController extends AbstractController
             ]
         );
     }
-}
+    
+
+    #[Route('/generate-complete-pv', name: 'app_exam_grade_generate_complete_pv')]
+    public function generateCompletePV(
+        EntityManagerInterface $entityManager, 
+        ExamRepository $examRepository,
+        ExamGradeRepository $examGradeRepository,
+        AcademicYearRepository $academicYearRepository,
+        SemesterRepository $semesterRepository
+    ): Response
+    {
+        // Récupérer le niveau géré par l'utilisateur connecté
+        $user = $this->getUser();
+        $levelManager = $user;
+        $level = $levelManager->getLevel();
+        
+        // Récupérer le semestre et l'année académique en cours
+        $semester = $semesterRepository->findCurrentSemester();
+        $academicYear = $academicYearRepository->findCurrentYear();
+        
+        // Fallback si les méthodes personnalisées échouent
+        if (!$semester) {
+            // Récupérer le premier semestre du niveau
+            $semester = $entityManager->getRepository(Semester::class)
+                ->findOneBy(['level' => $level], ['code' => 'ASC']);
+            
+            if (!$semester) {
+                $this->addFlash('error', 'Aucun semestre trouvé pour ce niveau.');
+                return $this->redirectToRoute('app_exam_index');
+            }
+        }
+        
+        if (!$academicYear) {
+            // Récupérer la dernière année académique
+            $academicYear = $entityManager->getRepository(AcademicYear::class)
+                ->findOneBy([], ['endDate' => 'DESC']);
+            
+            if (!$academicYear) {
+                $this->addFlash('error', 'Aucune année académique trouvée.');
+                return $this->redirectToRoute('app_exam_index');
+            }
+        }
+        
+        // Récupérer tous les examens pour ce niveau dans l'année académique trouvée
+        $exams = $examRepository->findByLevelAndYear($level, $academicYear);
+        
+        if (empty($exams)) {
+            $this->addFlash('warning', 'Aucun examen trouvé pour ce niveau dans l\'année académique en cours.');
+            return $this->redirectToRoute('app_exam_index');
+        }
+        
+        // Organiser les données par UE et EC
+        $resultsByUE = [];
+        
+        foreach ($exams as $exam) {
+            $ue = $exam->getEc()->getUe();
+            $ec = $exam->getEc();
+            
+            // Récupérer les résultats pour cet examen
+            $examResults = $examGradeRepository->findCompleteResultsByExam($exam);
+            $statistics = $examGradeRepository->getExamStatistics($exam);
+            
+            // Organiser par UE puis par EC
+            if (!isset($resultsByUE[$ue->getId()])) {
+                $resultsByUE[$ue->getId()] = [
+                    'ue' => $ue,
+                    'ecs' => []
+                ];
+            }
+            
+            if (!isset($resultsByUE[$ue->getId()]['ecs'][$ec->getId()])) {
+                $resultsByUE[$ue->getId()]['ecs'][$ec->getId()] = [
+                    'ec' => $ec,
+                    'exams' => []
+                ];
+            }
+            
+            $resultsByUE[$ue->getId()]['ecs'][$ec->getId()]['exams'][] = [
+                'exam' => $exam,
+                'results' => $examResults,
+                'statistics' => $statistics
+            ];
+        }
+        
+        // Récupérer tous les étudiants du niveau
+        $students = $entityManager->getRepository(Student::class)->findBy(['level' => $level], ['lastName' => 'ASC', 'firstName' => 'ASC']);
+        
+        // Générer le PDF
+        $html = $this->renderView('exam_grade/complete_pv.html.twig', [
+            'level' => $level,
+            'resultsByUE' => $resultsByUE,
+            'students' => $students,
+            'academicYear' => $academicYear,
+            'semester' => $semester,
+            'generatedDate' => new \DateTime(),
+        ]);
+        
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+        
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape'); // Format paysage pour plus d'espace pour les colonnes
+        $dompdf->render();
+        
+        $filename = 'pv_complet_' . $level->getCode() . '_' . date('Y-m-d') . '.pdf';
+        
+        return new Response(
+            $dompdf->output(),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            ]
+        );
+    
+    }}

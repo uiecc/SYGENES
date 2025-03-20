@@ -16,28 +16,45 @@ class AcademicYearRepository extends ServiceEntityRepository
         parent::__construct($registry, AcademicYear::class);
     }
 
-    //    /**
-    //     * @return AcademicYear[] Returns an array of AcademicYear objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?AcademicYear
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Trouve l'année académique actuelle
+     * 
+     * @return AcademicYear|null L'année académique actuelle ou null si aucune n'est trouvée
+     */
+    public function findCurrentYear(): ?AcademicYear
+    {
+        $currentDate = new \DateTime();
+        
+        // D'abord, essayer de trouver une année académique qui englobe la date actuelle
+        $academicYear = $this->createQueryBuilder('a')
+            ->where('a.startDate <= :currentDate')
+            ->andWhere('a.endDate >= :currentDate')
+            ->setParameter('currentDate', $currentDate)
+            ->getQuery()
+            ->getOneOrNullResult();
+        
+        // Si aucune année ne correspond exactement, prendre la plus récente
+        if (!$academicYear) {
+            $academicYear = $this->createQueryBuilder('a')
+                ->orderBy('a.endDate', 'DESC')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
+        
+        return $academicYear;
+    }
+    
+    /**
+     * Trouve l'année académique active
+     * (une année académique peut être marquée comme active manuellement)
+     */
+    public function findActiveYear(): ?AcademicYear
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

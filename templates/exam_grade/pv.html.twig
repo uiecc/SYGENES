@@ -2,98 +2,132 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>PV Examen - {{ exam.ec.code }} - {{ exam.ec.name }}</title>
+    <title>PV Complet - {{ level.code }} - {{ level.name }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 10px;
+            line-height: 1.3;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
+            color: #000;
         }
         h1 {
-            font-size: 18px;
+            font-size: 16px;
             text-align: center;
-            margin: 0 0 20px;
+            margin: 0 0 15px;
             font-weight: bold;
             text-transform: uppercase;
         }
         h2 {
-            font-size: 16px;
-            margin: 0 0 15px;
+            font-size: 14px;
+            margin: 15px 0 10px;
+            font-weight: bold;
+            padding: 3px 0;
+            border-bottom: 1px solid #888;
+        }
+        h3 {
+            font-size: 12px;
+            margin: 10px 0 5px;
             font-weight: bold;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         th, td {
             border: 1px solid #333;
-            padding: 6px;
+            padding: 4px;
             text-align: left;
-            font-size: 11px;
+            font-size: 9px;
         }
         th {
             background-color: #f2f2f2;
             font-weight: bold;
             text-align: center;
+            vertical-align: middle;
         }
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 1px solid #000;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
         .school-name {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             text-transform: uppercase;
         }
         .info-table {
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border-collapse: collapse;
         }
         .info-table td {
-            padding: 4px;
+            padding: 3px;
             border: none;
         }
         .info-table .label {
             font-weight: bold;
-            width: 150px;
+            width: 120px;
         }
         .center {
             text-align: center;
         }
         .footer {
-            margin-top: 30px;
+            margin-top: 20px;
             text-align: center;
-            font-size: 10px;
+            font-size: 8px;
             color: #666;
             border-top: 1px solid #ddd;
-            padding-top: 10px;
+            padding-top: 8px;
         }
         .signature-block {
-            margin-top: 40px;
+            margin-top: 30px;
             display: flex;
             justify-content: space-between;
         }
         .signature {
             width: 30%;
             border-top: 1px solid #000;
-            padding-top: 10px;
+            padding-top: 8px;
             text-align: center;
-            margin: 0 10px;
+            margin: 0 8px;
         }
         .passed {
-            font-weight: bold;
             color: #006400;
         }
         .failed {
-            font-weight: bold;
             color: #8b0000;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        .results-table {
+            font-size: 9px;
+        }
+        .results-table th {
+            padding: 3px 2px;
+        }
+        .results-table td {
+            padding: 3px 2px;
+        }
+        .rotate-90 {
+            transform: rotate(90deg);
+            white-space: nowrap;
+            width: 30px;
+            height: 100px;
+        }
+        .narrow-column {
+            width: 30px;
+        }
+        .medium-column {
+            width: 40px;
+        }
+        .student-name {
+            width: 150px;
         }
     </style>
 </head>
@@ -101,7 +135,7 @@
     <div class="header">
         <div class="school-name">{{ level.field.school.name|upper }}</div>
         <div>{{ level.field.school.university.name }}</div>
-        <h1>Procès-Verbal d'Examen</h1>
+        <h1>Procès-Verbal des Examens - {{ semester.name }}</h1>
     </div>
     
     <table class="info-table">
@@ -112,83 +146,156 @@
             <td>{{ level.code }} - {{ level.name }}</td>
         </tr>
         <tr>
-            <td class="label">Élément Constitutif:</td>
-            <td>{{ exam.ec.code }} - {{ exam.ec.name }}</td>
-            <td class="label">Unité d'Enseignement:</td>
-            <td>{{ exam.ec.ue.code }} - {{ exam.ec.ue.name }}</td>
-        </tr>
-        <tr>
-            <td class="label">Type d'examen:</td>
-            <td>{{ exam.type == 'NORMAL' ? 'Normal' : 'Rattrapage' }}</td>
-            <td class="label">Date d'examen:</td>
-            <td>{{ exam.examDate|date('d/m/Y H:i') }}</td>
-        </tr>
-        <tr>
             <td class="label">Année Académique:</td>
-            <td>{{ exam.academicYear.name }}</td>
-            <td class="label">Coefficient:</td>
-            <td>{{ exam.weight }}</td>
+            <td>{{ academicYear.name }}</td>
+            <td class="label">Semestre:</td>
+            <td>{{ semester.name }}</td>
+        </tr>
+        <tr>
+            <td class="label">Date du PV:</td>
+            <td colspan="3">{{ generatedDate|date('d/m/Y') }}</td>
         </tr>
     </table>
     
-    <h2>Résultats de l'examen</h2>
-    
-    <table>
+    {% for ueInfo in resultsByUE %}
+    <h2>UE: {{ ueInfo.ue.code }} - {{ ueInfo.ue.name }} ({{ ueInfo.ue.credit }} crédits)</h2>
+        
+    <table class="results-table">
         <thead>
             <tr>
-                <th width="5%">N°</th>
-                <th width="15%">Matricule</th>
-                <th width="35%">Nom et Prénom</th>
-                <th width="10%">Note CC (/30)</th>
-                {% if exam.ec.hasTP %}
-                    <th width="10%">Note TP (/20)</th>
-                {% endif %}
-                <th width="10%">Note Examen (/20)</th>
-                <th width="10%">Note Finale</th>
-                <th width="5%">Résultat</th>
+                <th rowspan="2" class="narrow-column">N°</th>
+                <th rowspan="2" class="medium-column">Matricule</th>
+                <th rowspan="2" class="student-name">Nom et Prénom</th>
+                
+                {% for ecInfo in ueInfo.ecs %}
+                    <th>{{ ecInfo.ec.code }} - {{ ecInfo.ec.name }} ({{ ecInfo.ec.credit }} cr.)</th>
+                {% endfor %}
+                
+                <th rowspan="2" class="narrow-column">Moyenne UE</th>
+                <th rowspan="2" class="narrow-column">Résultat</th>
+            </tr>
+            <tr>
+                {% for ecInfo in ueInfo.ecs %}
+                    <th class="narrow-column">Note /20</th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
-            {% for result in results %}
+            {% for student in students %}
                 <tr>
                     <td class="center">{{ loop.index }}</td>
-                    <td>{{ result.student.matricule }}</td>
-                    <td>{{ result.student.lastName }} {{ result.student.firstName }}</td>
-                    <td class="center">{{ result.ccNote ? result.ccNote|number_format(2) : '-' }}</td>
-                    {% if exam.ec.hasTP %}
-                        <td class="center">{{ result.tpNote ? result.tpNote|number_format(2) : '-' }}</td>
-                    {% endif %}
-                    <td class="center">{{ result.examGrade|number_format(2) }}</td>
-                    <td class="center">
-                        {% set finalGrade = 0 %}
-                        {% set weight = 0 %}
+                    <td>{{ student.matricule }}</td>
+                    <td>{{ student.lastName }} {{ student.firstName }}</td>
+                    
+                    {% set totalUEPoints = 0 %}
+                    {% set totalUECredits = 0 %}
+                    {% set allECsPassed = true %}
+                    
+                    {% for ecInfo in ueInfo.ecs %}
+                        {% set hasCCGrade = false %}
+                        {% set hasTPGrade = false %}
+                        {% set hasExamGrade = false %}
+                        {% set ccNote = 0 %}
+                        {% set tpNote = 0 %}
+                        {% set examNote = 0 %}
+                        {% set finalECGrade = 0 %}
                         
-                        {# Calcul de la note finale en pondérant CC, TP et Examen #}
-                        {% if result.ccNote %}
-                            {% set finalGrade = finalGrade + (result.ccNote * 0.3) %}
-                            {% set weight = weight + 0.3 %}
+                        {# Chercher les notes pour cet étudiant et cet EC #}
+                        {% for examInfo in ecInfo.exams %}
+                            {% for result in examInfo.results %}
+                                {% if result.anonymousCode.student.id == student.id %}
+                                    {# Si c'est un CC #}
+                                    {% if examInfo.exam.type == 'CC' %}
+                                        {% set hasCCGrade = true %}
+                                        {% set ccNote = result.grade %}
+                                    {% endif %}
+                                    
+                                    {# Si c'est un TP #}
+                                    {% if examInfo.exam.type == 'TP' %}
+                                        {% set hasTPGrade = true %}
+                                        {% set tpNote = result.grade %}
+                                    {% endif %}
+                                    
+                                    {# Si c'est un examen normal #}
+                                    {% if examInfo.exam.type == 'NORMAL' %}
+                                        {% set hasExamGrade = true %}
+                                        {% set examNote = result.grade %}
+                                    {% endif %}
+                                    
+                                    {# Si c'est un rattrapage et meilleur que l'examen normal #}
+                                    {% if examInfo.exam.type == 'RATTRAPAGE' and result.grade > examNote %}
+                                        {% set hasExamGrade = true %}
+                                        {% set examNote = result.grade %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        
+                        {# Calcul de la note finale de l'EC sur 100 puis ramenée sur 20 #}
+                        {% set totalPoints = 0 %}
+                        {% set hasAnyGrade = hasCCGrade or hasTPGrade or hasExamGrade %}
+                        
+                        {% if hasAnyGrade %}
+                            {% if ecInfo.ec.hasTP %}
+                                {# CC: 30%, TP: 20%, Examen: 50% #}
+                                {% set ccPoints = hasCCGrade ? (ccNote * 1.5) : 0 %} {# CC sur 30 points #}
+                                {% set tpPoints = hasTPGrade ? tpNote : 0 %} {# TP sur 20 points #}
+                                {% set examPoints = hasExamGrade ? (examNote * 2.5) : 0 %} {# Examen sur 50 points #}
+                                
+                                {% set totalPoints = ccPoints + tpPoints + examPoints %}
+                            {% else %}
+                                {# CC: 30%, Examen: 70% #}
+                                {% set ccPoints = hasCCGrade ? (ccNote * 1.5) : 0 %} {# CC sur 30 points #}
+                                {% set examPoints = hasExamGrade ? (examNote * 3.5) : 0 %} {# Examen sur 70 points #}
+                                
+                                {% set totalPoints = ccPoints + examPoints %}
+                            {% endif %}
+                            
+                            {# Ramener sur 20 #}
+                            {% set finalECGrade = totalPoints / 5 %}
+                            
+                            {# Contribution à la moyenne de l'UE #}
+                            {% set totalUEPoints = totalUEPoints + (finalECGrade * ecInfo.ec.credit) %}
+                            {% set totalUECredits = totalUECredits + ecInfo.ec.credit %}
+                            
+                            {% if finalECGrade < 10 %}
+                                {% set allECsPassed = false %}
+                            {% endif %}
                         {% endif %}
                         
-                        {% if exam.ec.hasTP and result.tpNote %}
-                            {% set finalGrade = finalGrade + (result.tpNote * 0.2) %}
-                            {% set weight = weight + 0.2 %}
-                        {% endif %}
+                        {# Affichage de la note finale #}
+                        <td class="center">
+                            {% if hasAnyGrade %}
+                                <strong>{{ finalECGrade|number_format(2) }}</strong>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    
+                    {# Calcul et affichage de la moyenne de l'UE #}
+                    {% if totalUECredits > 0 %}
+                        {% set ueAverage = totalUEPoints / totalUECredits %}
+                        <td class="center"><strong>{{ ueAverage|number_format(2) }}</strong></td>
                         
-                        {% set finalGrade = finalGrade + (result.examGrade * (1 - weight)) %}
-                        
-                        <strong>{{ finalGrade|number_format(2) }}/20</strong>
-                    </td>
-                    <td class="center">
-                        {% if finalGrade >= 10 %}
-                            <span class="passed">ADMIS</span>
+                        {% if ueAverage >= 10 and allECsPassed %}
+                            <td class="center passed">VALIDÉ</td>
                         {% else %}
-                            <span class="failed">AJOURNÉ</span>
+                            <td class="center failed">NON VALIDÉ</td>
                         {% endif %}
-                    </td>
+                    {% else %}
+                        <td class="center">-</td>
+                        <td class="center">-</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    
+    {% if not loop.last %}
+        <div class="page-break"></div>
+    {% endif %}
+    {% endfor %}
     
     <div class="signature-block">
         <div class="signature">
@@ -220,7 +327,7 @@
     </div>
     
     <div class="footer">
-        <p>Document généré le {{ "now"|date('d/m/Y à H:i') }}</p>
+        <p>Document généré le {{ generatedDate|date('d/m/Y à H:i') }}</p>
         <p>Ce document est un procès-verbal officiel des résultats d'examen.</p>
     </div>
 </body>

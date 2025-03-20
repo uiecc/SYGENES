@@ -137,7 +137,7 @@ class AnonymousCodeController extends AbstractController
         $anonymousCodes = $anonymousCodeRepository->findBy(['exam' => $exam], ['code' => 'ASC']);
         
         // Générer le PDF avec les noms et codes (pour l'administration)
-        $html = $this->renderView('anonymous_code/admin_list.html.twig', [
+        $htmlAdmin = $this->renderView('anonymous_code/admin_list.html.twig', [
             'exam' => $exam,
             'anonymousCodes' => $anonymousCodes,
         ]);
@@ -146,11 +146,11 @@ class AnonymousCodeController extends AbstractController
         $options->set('defaultFont', 'Arial');
         
         $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
+        $dompdf->loadHtml($htmlAdmin);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
         
-        $filename = 'codes_anonymes_admin_' . $exam->getEc()->getCode() . '.pdf';
+        $filename = 'codes_anonymes_' . $exam->getEc()->getCode() . '.pdf';
         
         return new Response(
             $dompdf->output(),
@@ -192,6 +192,49 @@ class AnonymousCodeController extends AbstractController
         $dompdf->render();
         
         $filename = 'codes_anonymes_correcteurs_' . $exam->getEc()->getCode() . '.pdf';
+        
+        return new Response(
+            $dompdf->output(),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            ]
+        );
+    }
+    
+    #[Route('/print-combined/{id}', name: 'app_anonymous_code_print_combined')]
+    public function printCombinedCodes(Exam $exam, AnonymousCodeRepository $anonymousCodeRepository): Response
+    {
+        // Vérifier les droits d'accès
+        $user = $this->getUser();
+        $levelManager = $user;
+        $level = $levelManager->getLevel();
+        
+        if ($exam->getEc()->getUe()->getSemester()->getLevel()->getId() !== $level->getId()) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas le droit d\'accéder à ces codes anonymes.');
+        }
+        
+        // Récupérer tous les codes anonymes pour cet examen
+        $anonymousCodes = $anonymousCodeRepository->findBy(['exam' => $exam], ['code' => 'ASC']);
+        
+        // Générer le HTML combiné avec une page de séparation
+        $htmlCombined = $this->renderView('anonymous_code/combined_lists.html.twig', [
+            'exam' => $exam,
+            'anonymousCodes' => $anonymousCodes,
+        ]);
+        
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+        
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($htmlCombined);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        
+        $filename = 'listes_codes_anonymes_' . $exam->getEc()->getCode() . '.pdf';
         
         return new Response(
             $dompdf->output(),

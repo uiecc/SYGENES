@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\AcademicYear;
 use App\Entity\Exam;
 use App\Entity\Level;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -37,6 +38,61 @@ class ExamRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+        /**
+     * Trouve tous les examens pour un niveau et une année académique spécifiques.
+     * 
+     * Cette méthode construit une requête personnalisée pour trouver les examens
+     * qui sont associés à un niveau via les relations EC->UE->Semester->Level
+     * et qui appartiennent à une année académique donnée.
+     * 
+     * @param Level $level Le niveau
+     * @param AcademicYear $academicYear L'année académique
+     * @return array<int, Exam> Les examens correspondants
+     */
+    public function findByLevelAndYear(Level $level, AcademicYear $academicYear): array
+    {
+        return $this->createQueryBuilder('e')
+            ->join('e.ec', 'ec')
+            ->join('ec.ue', 'ue')
+            ->join('ue.semester', 's')
+            ->join('s.level', 'l')
+            ->andWhere('l.id = :levelId')
+            ->andWhere('e.academicYear = :academicYear')
+            ->andWhere('e.status = :status') // Seulement les examens terminés/corrigés
+            ->setParameter('levelId', $level->getId())
+            ->setParameter('academicYear', $academicYear)
+            ->setParameter('status', 'GRADED') // Statut "Corrigé"
+            ->orderBy('ue.code', 'ASC')
+            ->addOrderBy('ec.code', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+    
+    /**
+     * Trouve tous les examens de type normal pour un niveau et une année académique.
+     */
+    public function findNormalExamsByLevelAndYear(Level $level, AcademicYear $academicYear): array
+    {
+        return $this->createQueryBuilder('e')
+            ->join('e.ec', 'ec')
+            ->join('ec.ue', 'ue')
+            ->join('ue.semester', 's')
+            ->join('s.level', 'l')
+            ->andWhere('l.id = :levelId')
+            ->andWhere('e.academicYear = :academicYear')
+            ->andWhere('e.type = :type')
+            ->andWhere('e.status = :status')
+            ->setParameter('levelId', $level->getId())
+            ->setParameter('academicYear', $academicYear)
+            ->setParameter('type', 'NORMAL')
+            ->setParameter('status', 'GRADED')
+            ->orderBy('ue.code', 'ASC')
+            ->addOrderBy('ec.code', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Exam[] Returns an array of Exam objects
     //     */

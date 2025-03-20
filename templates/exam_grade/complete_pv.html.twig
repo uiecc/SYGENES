@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PV Examen - {{ exam.ec.code }} - {{ exam.ec.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 18px;
+            text-align: center;
+            margin: 0 0 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        h2 {
+            font-size: 16px;
+            margin: 0 0 15px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 6px;
+            text-align: left;
+            font-size: 11px;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-align: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 10px;
+        }
+        .school-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .info-table {
+            width: 100%;
+            margin-bottom: 15px;
+            border-collapse: collapse;
+        }
+        .info-table td {
+            padding: 4px;
+            border: none;
+        }
+        .info-table .label {
+            font-weight: bold;
+            width: 150px;
+        }
+        .center {
+            text-align: center;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .signature-block {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature {
+            width: 30%;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+            text-align: center;
+            margin: 0 10px;
+        }
+        .passed {
+            font-weight: bold;
+            color: #006400;
+        }
+        .failed {
+            font-weight: bold;
+            color: #8b0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="school-name">{{ level.field.school.name|upper }}</div>
+        <div>{{ level.field.school.university.name }}</div>
+        <h1>Procès-Verbal d'Examen</h1>
+    </div>
+    
+    <table class="info-table">
+        <tr>
+            <td class="label">Filière:</td>
+            <td>{{ level.field.code }} - {{ level.field.name }}</td>
+            <td class="label">Niveau:</td>
+            <td>{{ level.code }} - {{ level.name }}</td>
+        </tr>
+        <tr>
+            <td class="label">Élément Constitutif:</td>
+            <td>{{ exam.ec.code }} - {{ exam.ec.name }}</td>
+            <td class="label">Unité d'Enseignement:</td>
+            <td>{{ exam.ec.ue.code }} - {{ exam.ec.ue.name }}</td>
+        </tr>
+        <tr>
+            <td class="label">Type d'examen:</td>
+            <td>{{ exam.type == 'NORMAL' ? 'Normal' : 'Rattrapage' }}</td>
+            <td class="label">Date d'examen:</td>
+            <td>{{ exam.examDate|date('d/m/Y H:i') }}</td>
+        </tr>
+        <tr>
+            <td class="label">Année Académique:</td>
+            <td>{{ exam.academicYear.name }}</td>
+            <td class="label">Coefficient:</td>
+            <td>{{ exam.weight }}</td>
+        </tr>
+    </table>
+    
+    <h2>Résultats de l'examen</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th width="5%">N°</th>
+                <th width="15%">Matricule</th>
+                <th width="35%">Nom et Prénom</th>
+                <th width="15%">Note Examen (/20)</th>
+                <th width="20%">Note Finale (/20)</th>
+                <th width="10%">Résultat</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+                {% set student = result.anonymousCode.student %}
+                {% set examGrade = result.grade %}
+                
+                {# Récupérer les notes CC et TP pour cet étudiant si elles existent #}
+                {% set ccNote = student.getCCNoteForEC(exam.ec) %}
+                {% set tpNote = exam.ec.hasTP ? student.getTPNoteForEC(exam.ec) : null %}
+                
+                {# Calculer la note finale sur 100 puis ramenée sur 20 #}
+                {% set totalPoints = 0 %}
+                
+                {% if exam.ec.hasTP %}
+                    {# CC: 30%, TP: 20%, Examen: 50% #}
+                    {% set ccPoints = ccNote ? (ccNote * 1.5) : 0 %} {# CC sur 30 points #}
+                    {% set tpPoints = tpNote ? tpNote : 0 %} {# TP sur 20 points #}
+                    {% set examPoints = examGrade * 2.5 %} {# Examen sur 50 points #}
+                    
+                    {% set totalPoints = ccPoints + tpPoints + examPoints %}
+                {% else %}
+                    {# CC: 30%, Examen: 70% #}
+                    {% set ccPoints = ccNote ? (ccNote * 1.5) : 0 %} {# CC sur 30 points #}
+                    {% set examPoints = examGrade * 3.5 %} {# Examen sur 70 points #}
+                    
+                    {% set totalPoints = ccPoints + examPoints %}
+                {% endif %}
+                
+                {# Ramener sur 20 #}
+                {% set finalGrade = totalPoints / 5 %}
+                
+                <tr>
+                    <td class="center">{{ loop.index }}</td>
+                    <td>{{ student.matricule }}</td>
+                    <td>{{ student.lastName }} {{ student.firstName }}</td>
+                    <td class="center">{{ examGrade|number_format(2) }}</td>
+                    <td class="center"><strong>{{ finalGrade|number_format(2) }}</strong></td>
+                    <td class="center">
+                        {% if finalGrade >= 10 %}
+                            <span class="passed">ADMIS</span>
+                        {% else %}
+                            <span class="failed">AJOURNÉ</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="signature-block">
+        <div class="signature">
+            <p>Responsable de la Filière</p>
+            {% if level.field.fieldManager %}
+                <p>{{ level.field.fieldManager.firstName }} {{ level.field.fieldManager.lastName }}</p>
+            {% else %}
+                <p>___________________________</p>
+            {% endif %}
+        </div>
+        
+        <div class="signature">
+            <p>Responsable du Niveau</p>
+            {% if level.levelManager %}
+                <p>{{ level.levelManager.firstName }} {{ level.levelManager.lastName }}</p>
+            {% else %}
+                <p>___________________________</p>
+            {% endif %}
+        </div>
+        
+        <div class="signature">
+            <p>Le Directeur</p>
+            {% if level.field.school.schoolManager %}
+                <p>{{ level.field.school.schoolManager.firstName }} {{ level.field.school.schoolManager.lastName }}</p>
+            {% else %}
+                <p>___________________________</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Document généré le {{ generatedDate|date('d/m/Y à H:i') }}</p>
+        <p>Ce document est un procès-verbal officiel des résultats d'examen.</p>
+    </div>
+</body>
+</html>
