@@ -18,7 +18,7 @@ class FieldType extends AbstractType
             ->add('code')
             ->add('school', EntityType::class, [
                 'class' => School::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
         ;
     }

@@ -1,10 +1,14 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}{{ title|default('Ajouter une filière') }}{% endblock %}
 
 {% block body %}
     <div class="container py-4">
-        <h1 class="mb-4">{{ title|default('Ajouter une filière') }}</h1>
+    <a href="javascript:history.back()" class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-custom-orange transition-all duration-200 ease-in-out shadow-sm">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+    </svg>
+    <span class="sr-only">Retour</span>
+</a>
+        <h1 class="mb-4 font-semibold text-4xl">{{ title|default('Ajouter une filière') }}</h1>
+        <p class="mb-4 text-gray-600 dark:text-gray-400">Veuillez remplir le formulaire ci-dessous pour ajouter une nouvelle filière.</p>
 
         {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
