@@ -50,7 +50,7 @@ security:
         
         # Routes protégées par rôle
         - { path: ^/admin, roles: PUBLIC_ACCESS }
-        - { path: ^/school, roles: ROLE_SCHOOL_MANAGER }
+        - { path: ^/school, roles: ROLE_ADMIN }
         - { path: ^/field-manager, roles: ROLE_FIELD_MANAGER }
         - { path: ^/level-manager, roles: ROLE_LEVEL_MANAGER }
         

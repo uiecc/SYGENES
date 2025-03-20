@@ -33,7 +33,7 @@ final class UniversityController extends AbstractController
             $entityManager->persist($university);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_university_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_administrator_new', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('university/new.html.twig', [
