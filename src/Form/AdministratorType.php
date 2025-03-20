@@ -66,7 +66,7 @@ class AdministratorType extends AbstractType
                 ],
             ])
             ->add('cni', TextType::class, [
-                'label' => 'cni'
+                'label' => 'CNI'
             ])
 
             ;
