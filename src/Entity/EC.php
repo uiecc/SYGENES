@@ -41,9 +41,16 @@ class EC
     #[ORM\OneToMany(targetEntity: Note::class, mappedBy: 'ec')]
     private Collection $note;
 
+    /**
+     * @var Collection<int, Exam>
+     */
+    #[ORM\OneToMany(targetEntity: Exam::class, mappedBy: 'ec')]
+    private Collection $exams;
+
     public function __construct()
     {
         $this->note = new ArrayCollection();
+        $this->exams = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -160,6 +167,36 @@ class EC
             // set the owning side to null (unless already changed)
             if ($note->getEc() === $this) {
                 $note->setEc(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Exam>
+     */
+    public function getExams(): Collection
+    {
+        return $this->exams;
+    }
+
+    public function addExam(Exam $exam): static
+    {
+        if (!$this->exams->contains($exam)) {
+            $this->exams->add($exam);
+            $exam->setEc($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExam(Exam $exam): static
+    {
+        if ($this->exams->removeElement($exam)) {
+            // set the owning side to null (unless already changed)
+            if ($exam->getEc() === $this) {
+                $exam->setEc(null);
             }
         }
 

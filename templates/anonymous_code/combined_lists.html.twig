@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Listes des codes anonymes - {{ exam.ec.code }}</title>
+    <style>
+        @page {
+            margin: 1cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #000;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .exam-info {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .exam-info p {
+            margin: 5px 0;
+        }
+        .exam-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .code {
+            font-family: monospace;
+            font-weight: bold;
+            text-align: center;
+        }
+        .note-field {
+            width: 60px;
+            border-bottom: 1px solid #000;
+            text-align: center;
+        }
+        .page-number {
+            text-align: right;
+            font-size: 10px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+        .info-box {
+            border: 1px dashed #000;
+            padding: 10px;
+            margin: 20px auto;
+            max-width: 80%;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Première partie : Liste administrative -->
+<div class="header">
+    <h1>LISTE DES CODES ANONYMES - ADMINISTRATION</h1>
+    <p>Confidentiel - À conserver par l'administration</p>
+</div>
+
+<div class="exam-info">
+    <div class="exam-title">{{ exam.ec.code }} - {{ exam.ec.name }}</div>
+    <p><strong>UE:</strong> {{ exam.ec.ue.code }} - {{ exam.ec.ue.name }}</p>
+    <p><strong>Date de l'examen:</strong> {{ exam.examDate|date('d/m/Y H:i') }}</p>
+    <p><strong>Type d'examen:</strong> {{ exam.type }}</p>
+    <p><strong>Semestre:</strong> {{ exam.ec.ue.semester.name }}</p>
+</div>
+
+<div class="section-title">Liste de correspondance Étudiants / Codes anonymes</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>N°</th>
+            <th>Matricule</th>
+            <th>Nom et Prénom</th>
+            <th>Code anonyme</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for anonymousCode in anonymousCodes %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ anonymousCode.student.matricule }}</td>
+            <td>{{ anonymousCode.student.lastName }} {{ anonymousCode.student.firstName }}</td>
+            <td class="code">{{ anonymousCode.code }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="info-box">
+    <p><strong>Important :</strong> Cette liste de correspondance doit rester confidentielle et ne doit être accessible qu'à l'administration.</p>
+</div>
+
+<div class="footer">
+    <p>Document généré le {{ "now"|date('d/m/Y à H:i') }}</p>
+</div>
+
+<div class="page-number">Page 1</div>
+
+<!-- Saut de page -->
+<div class="page-break"></div>
+
+<!-- Deuxième partie : Liste pour correcteurs -->
+<div class="header">
+    <h1>LISTE DES CODES ANONYMES - CORRECTEURS</h1>
+    <p>Document pour notation des copies anonymes</p>
+</div>
+
+<div class="exam-info">
+    <div class="exam-title">{{ exam.ec.code }} - {{ exam.ec.name }}</div>
+    <p><strong>UE:</strong> {{ exam.ec.ue.code }} - {{ exam.ec.ue.name }}</p>
+    <p><strong>Date de l'examen:</strong> {{ exam.examDate|date('d/m/Y H:i') }}</p>
+    <p><strong>Type d'examen:</strong> {{ exam.type }}</p>
+    <p><strong>Enseignant responsable:</strong> {% if exam.ec.teacher %}{{ exam.ec.teacher.lastName }} {{ exam.ec.teacher.firstName }}{% else %}Non assigné{% endif %}</p>
+</div>
+
+<div class="section-title">Grille de notation anonyme</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>N°</th>
+            <th>Code anonyme</th>
+            <th>Note (/20)</th>
+            <th>Observations</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for anonymousCode in anonymousCodes %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td class="code">{{ anonymousCode.code }}</td>
+            <td class="note-field"></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="info-box">
+    <p><strong>Instructions :</strong> Veuillez reporter les notes des copies en utilisant uniquement le code anonyme comme identifiant. Ne pas écrire le nom des étudiants sur ce document.</p>
+</div>
+
+<div class="footer">
+    <p>Document à retourner au service des examens après notation</p>
+    <p>Généré le {{ "now"|date('d/m/Y à H:i') }}</p>
+</div>
+
+<div class="page-number">Page 2</div>
+
+</body>
+</html>

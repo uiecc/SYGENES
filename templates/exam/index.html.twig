@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des examens{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Gestion des examens</h1>
+    
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ message }}
+        </div>
+    {% endfor %}
+    
+    <div class="flex justify-between mb-6">
+        <a href="{{ path('app_exam_new') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            Créer un nouvel examen
+        </a>
+        
+        <a href="{{ path('app_exam_grade_generate_complete_pv') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Générer PV Complet
+        </a>
+    </div>
+    
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">EC</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for exam in exams %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {{ exam.ec.code }} - {{ exam.ec.name }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {{ exam.examDate|date('d/m/Y H:i') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if exam.type == 'NORMAL' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    Normal
+                                </span>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                    Rattrapage
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if exam.status == 'PLANNED' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                    Planifié
+                                </span>
+                            {% elseif exam.status == 'IN_PROGRESS' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    En cours
+                                </span>
+                            {% elseif exam.status == 'COMPLETED' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Terminé
+                                </span>
+                            {% elseif exam.status == 'GRADED' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                    Corrigé
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex flex-wrap gap-2 min-h-[2rem] relative">
+                                <a href="{{ path('app_exam_edit', {'id': exam.id}) }}" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
+                                
+                                <a href="{{ path('app_anonymous_code_generate', {'id': exam.id}) }}" class="text-green-600 hover:text-green-900">Générer codes</a>
+                                
+                                <!-- Menu déroulant entièrement en Tailwind -->
+                                <div class="relative group">
+                                    <button type="button" class="text-blue-600 hover:text-blue-900">
+                                        Imprimer
+                                    </button>
+                                    <div class="absolute left-0 mt-1 w-56 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 invisible group-hover:visible">
+                                        <div class="py-1">
+                                            <a href="{{ path('app_anonymous_code_print_combined', {'id': exam.id}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Listes complètes</a>
+                                            <a href="{{ path('app_anonymous_code_print', {'id': exam.id}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Pour administration</a>
+                                            <a href="{{ path('app_anonymous_code_print_for_corrections', {'id': exam.id}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Pour correcteurs</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <a href="{{ path('app_exam_grade_enter', {'id': exam.id}) }}" class="text-amber-600 hover:text-amber-900">Saisir notes</a>
+                                
+                                <a href="{{ path('app_exam_grade_view_results', {'id': exam.id}) }}" class="text-purple-600 hover:text-purple-900">Voir résultats</a>
+                                
+                                <a href="{{ path('app_exam_grade_generate_pv', {'id': exam.id}) }}" class="text-rose-600 hover:text-rose-900">Générer PV</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                
+                {% if exams|length == 0 %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                            Aucun examen trouvé.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des codes anonymes{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Gestion des codes anonymes</h1>
+    
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ message }}
+        </div>
+    {% endfor %}
+    
+    <div class="mb-6">
+        <a href="{{ path('app_anonymous_code_bulk_generate') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            Générer des codes anonymes
+        </a>
+        <a href="{{ path('app_exam_index') }}" class="ml-4 inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            Retour aux examens
+        </a>
+    </div>
+    
+    {% if codesByExam|length > 0 %}
+        {% for examData in codesByExam %}
+            <div class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
+                <div class="bg-gray-100 px-6 py-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <h2 class="font-semibold text-lg">
+                            {{ examData.exam.ec.code }} - {{ examData.exam.ec.name }}
+                            <span class="text-sm text-gray-500 ml-2">
+                                ({{ examData.exam.examDate|date('d/m/Y H:i') }})
+                            </span>
+                        </h2>
+                        <div class="flex space-x-2">
+                            <a href="{{ path('app_anonymous_code_print', {'id': examData.exam.id}) }}" class="text-blue-600 hover:text-blue-900">
+                                Imprimer (admin)
+                            </a>
+                            <a href="{{ path('app_anonymous_code_print_for_corrections', {'id': examData.exam.id}) }}" class="text-blue-600 hover:text-blue-900">
+                                Imprimer (correcteurs)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div class="mb-4 flex flex-wrap gap-4">
+                        <div class="bg-blue-50 p-3 rounded-md">
+                            <span class="text-sm text-blue-700 font-medium">Nombre de codes: {{ examData.codes|length }}</span>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-md">
+                            <span class="text-sm text-green-700 font-medium">Type: 
+                                {% if examData.exam.type == 'NORMAL' %}
+                                    Examen normal
+                                {% else %}
+                                    Rattrapage
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="bg-purple-50 p-3 rounded-md">
+                            <span class="text-sm text-purple-700 font-medium">État: 
+                                {% if examData.exam.status == 'PLANNED' %}
+                                    Planifié
+                                {% elseif examData.exam.status == 'IN_PROGRESS' %}
+                                    En cours
+                                {% elseif examData.exam.status == 'COMPLETED' %}
+                                    Terminé
+                                {% elseif examData.exam.status == 'GRADED' %}
+                                    Corrigé
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Étudiant</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Matricule</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de création</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for code in examData.codes %}
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ code.code }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ code.student.lastName }} {{ code.student.firstName }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ code.student.matricule }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ code.createdAt|date('d/m/Y H:i') }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="p-6 text-center text-gray-500">
+                Aucun code anonyme trouvé. <a href="{{ path('app_anonymous_code_bulk_generate') }}" class="text-indigo-600 hover:text-indigo-900">Générer des codes</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

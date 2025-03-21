@@ -48,11 +48,18 @@ class Student extends User
     #[ORM\OneToMany(targetEntity: Note::class, mappedBy: 'student')]
     private Collection $notes;
 
+    /**
+     * @var Collection<int, AnonymousCode>
+     */
+    #[ORM\OneToMany(targetEntity: AnonymousCode::class, mappedBy: 'student')]
+    private Collection $anonymousCodes;
+
     public function __construct()
     {
         parent::__construct();
         $this->studentUEs = new ArrayCollection();
         $this->notes = new ArrayCollection();
+        $this->anonymousCodes = new ArrayCollection();
     }
 
     public function getSex(): ?string
@@ -219,6 +226,36 @@ class Student extends User
             // set the owning side to null (unless already changed)
             if ($note->getStudent() === $this) {
                 $note->setStudent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AnonymousCode>
+     */
+    public function getAnonymousCodes(): Collection
+    {
+        return $this->anonymousCodes;
+    }
+
+    public function addAnonymousCode(AnonymousCode $anonymousCode): static
+    {
+        if (!$this->anonymousCodes->contains($anonymousCode)) {
+            $this->anonymousCodes->add($anonymousCode);
+            $anonymousCode->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnonymousCode(AnonymousCode $anonymousCode): static
+    {
+        if ($this->anonymousCodes->removeElement($anonymousCode)) {
+            // set the owning side to null (unless already changed)
+            if ($anonymousCode->getStudent() === $this) {
+                $anonymousCode->setStudent(null);
             }
         }
 
