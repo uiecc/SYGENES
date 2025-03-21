@@ -19,7 +19,7 @@ class UEManagerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('function', TextType::class, [
+            ->add('fonction', TextType::class, [
                 'label' => 'Fonction',
                 'required' => false
             ])
@@ -48,7 +48,7 @@ class UEManagerType extends AbstractType
                 },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
-                        ->leftJoin('u.manager', 'm')
+                        ->leftJoin('u.uEManager', 'm')
                         ->where('m.id IS NULL')
                         ->orderBy('u.name', 'ASC');
                 },

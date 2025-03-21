@@ -23,7 +23,7 @@ final class UEManagerController extends AbstractController
     }
 
     #[Route('/new', name: 'app_u_e_manager_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,): Response
     {
         $uEManager = new UEManager();
         $form = $this->createForm(UEManagerType::class, $uEManager);
